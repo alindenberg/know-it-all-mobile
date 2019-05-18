@@ -7,7 +7,8 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
+import {Button, Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
+import {createStackNavigator, createAppContainer} from 'react-navigation';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -17,7 +18,8 @@ const instructions = Platform.select({
 });
 
 type Props = {};
-export default class App extends Component<Props> {
+
+class LeaguesScreen extends React.Component {
   state = {
       leagues: [],
       //Have a loading state where when data retrieve returns data.
@@ -70,17 +72,75 @@ export default class App extends Component<Props> {
                   )}
                   keyExtractor={(item) => item.Name}
               />
+              <Text>League Screen</Text>
+              <Button
+                title="Go to Home"
+                onPress={() => this.props.navigation.navigate('Home')}
+              />
             </View>
           )
       } else {
           return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-              <Text>Hello World</Text>
+              <ActivityIndicator />
             </View>
           )
       }
   }
 }
+//
+// class HomeScreen extends React.Component {
+//   static navigationOptions = {
+//     title: 'Welcome',
+//   };
+//   render() {
+//     const {navigate} = this.props.navigation;
+//     return (
+//       <Button
+//         title="Go to Jane's profile"
+//         onPress={() => navigate('Default')}
+//       />
+//     );
+//   }
+// }
+//
+// const navigation = {
+//   Home: {screen: HomeScreen},
+//   Default: {screen: DefaultScreen}
+// };
+// const MainNavigator = createStackNavigator(navigation);
+// const AppContainer = createAppContainer(mainNavigator);
+//
+// export default class App extends React.Component {
+//   render() {
+//     return <AppContainer />;
+//   }
+// }
+
+class HomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>Home Screen</Text>
+        <Button
+          title="Go to Leagues"
+          onPress={() => this.props.navigation.navigate('Leagues')}
+        />
+      </View>
+    );
+  }
+}
+
+const AppNavigator = createStackNavigator({
+  Home: {
+    screen: HomeScreen
+  },
+  Leagues: {
+    screen: LeaguesScreen
+  }
+});
+
+export default createAppContainer(AppNavigator);
 
 const styles = StyleSheet.create({
   container: {
