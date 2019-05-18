@@ -10,8 +10,8 @@ export default class LeagueMatchesScreen extends React.Component {
   //Define your componentDidMount lifecycle hook that will retrieve data.
   //Also have the async keyword to indicate that it is asynchronous.
   async componentDidMount() {
-      const { navigation } = this.props;
-      const id = navigation.getParam('id', 'NO-ID');
+      // const { navigation } = this.props;
+      // const id = navigation.getParam('id', 'NO-ID');
       //Have a try and catch block for catching errors.
       try {
           //Assign the promise unresolved first then get the data using the json method.
@@ -24,14 +24,21 @@ export default class LeagueMatchesScreen extends React.Component {
       }
   }
   //Define your renderItem method the callback for the FlatList for rendering each item, and pass data as a argument.
-  renderItem(data) {
+  renderItem = ({item}) => {
       return (
-                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                      <Text>{data.LeagueID}</Text>
-                      <Text>{data.Name}</Text>
-                      <Text>{data.Country}</Text>
-                      <Text>{data.Division}</Text>
-                  </View>
+        <View style={{
+          flexDirection: 'row',
+          height: 100,
+        }}>
+          <Text>
+          Home Team: { item.HomeTeam }{"\n"}
+          Away Team: { item.AwayTeam }{"\n"}
+          Home Score: { item.HomeScore }{"\n"}
+          Away Score: { item.AwayScore }{"\n"}
+          Match ID: { item.MatchID }{"\n"}
+          Date: { item.Date }{"\n"}
+          </Text>
+        </View>
               )
   }
   render() {
@@ -41,21 +48,7 @@ export default class LeagueMatchesScreen extends React.Component {
           <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <FlatList
                 data={matches}
-                renderItem={({ item }) => (
-                  <View style={{
-                    flexDirection: 'row',
-                    height: 100,
-                  }}>
-                    <Text>
-                    Home Team: { item.HomeTeam }{"\n"}
-                    Away Team: { item.AwayTeam }{"\n"}
-                    Home Score: { item.HomeScore }{"\n"}
-                    Away Score: { item.AwayScore }{"\n"}
-                    Match ID: { item.MatchID }{"\n"}
-                    Date: { item.Date }{"\n"}
-                    </Text>
-                  </View>
-                )}
+                renderItem={(item) => this.renderItem(item)}
                 keyExtractor={(item) => item.MatchID}
             />
             <Text>League Screen</Text>

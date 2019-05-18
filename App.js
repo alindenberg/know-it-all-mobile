@@ -9,8 +9,10 @@
 import React, {Component} from 'react';
 import {Button, Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
-import LeaguesScreen from './components/leagues/LeagueScreen.js'
-import LeagueMatchesScreen from './components/matches/LeagueMatchesScreen.js'
+import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+import LeagueScreen from './components/leagues/LeagueScreen.js'
+import LeagueMatchesScreen from './components/leagues/LeagueMatchesScreen.js'
+import ProfileScreen from './components/users/ProfileScreen.js'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -51,26 +53,12 @@ type Props = {};
 //   }
 // }
 
-class HomeScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Home Screen</Text>
-        <Button
-          title="Go to Leagues"
-          onPress={() => this.props.navigation.navigate('Leagues')}
-        />
-      </View>
-    );
-  }
-}
-
-const AppNavigator = createStackNavigator({
-  Home: {
-    screen: HomeScreen
+const AppNavigator = createMaterialBottomTabNavigator({
+  Profile: {
+    screen: ProfileScreen
   },
   Leagues: {
-    screen: LeaguesScreen
+    screen: LeagueScreen
   },
   LeagueMatches: {
     screen: LeagueMatchesScreen
