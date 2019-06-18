@@ -17,7 +17,6 @@ export default class LeagueMatchesScreen extends React.Component {
           //Assign the promise unresolved first then get the data using the json method.
           const matchesApiCall = await fetch('http://localhost:8080/matches');
           const matches = await matchesApiCall.json();
-          console.log(matches)
           this.setState({matches: matches, isLoading: false});
       } catch(err) {
           console.log("Error fetching data-----------", err);
@@ -39,7 +38,7 @@ export default class LeagueMatchesScreen extends React.Component {
           Date: { item.Date }{"\n"}
           </Text>
         </View>
-              )
+      )
   }
   render() {
     const { matches, isLoading } = this.state;
