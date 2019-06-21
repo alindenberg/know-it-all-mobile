@@ -1,18 +1,15 @@
 import React from 'react';
 import {
-  AsyncStorage,
   View,
   TextInput,
-  Button
+  Button,
 } from 'react-native'
-import Auth0 from 'react-native-auth0';
-
-const auth0 = new Auth0({ domain: process.env.appDomain, clientId: process.env.kiaClientId});
+import AsyncStorage from '@react-native-community/async-storage'
+import {_onLogin} from '../services/auth'
 
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { accessToken: null }
   }
   render() {
     return (
@@ -28,32 +25,14 @@ export default class LoginScreen extends React.Component {
           secureTextEntry={true}
           onChangeText={(text) => this.setState({ text })}
         />
-        <Button title="Login" onPress={this._onLogin} />
-        <Button title="Logout" onPress={this._onLogout} />
-        <Button style={{ padding: 10 }} title="Sign Up" onPress={() => this.props.navigation.navigate('SignUp')} />
+        <Button title="Login" onPress={async () => {
+          await _onLogin().then(async () => {
+            this.props.navigation.navigate('Profile')
+          }).catch(err => {
+            console.log("Login error ", err)
+          })
+        }} />
       </View>
     );
-  }
-
-  _onLogin = () => {
-    auth0.webAuth
-      .authorize({
-        scope: 'read:bets',
-        audience: 'http://localhost:8080',
-      })
-      .then(credentials => {
-        console.log("credentials ", credentials)
-        this.setState({ accessToken: credentials.accessToken });
-      })
-      .catch(error => console.log(error));
-  };
-
-  _onLogout = () => {
-    auth0.webAuth
-      .clearSession({})
-      .then(success => {
-        this.setState({ accessToken: null });
-      })
-      .catch(error => console.log(error));
   }
 }

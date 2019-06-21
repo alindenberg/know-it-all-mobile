@@ -11,7 +11,7 @@ import {Button, Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, T
 import {createStackNavigator, createBottomTabNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
 import LeagueScreen from './src/components/leagues/LeagueScreen.js'
 import LeagueMatchesScreen from './src/components/leagues/LeagueMatchesScreen.js'
-import ProfileScreen from './src/components/users/ProfileScreen.js'
+import ProfileScreen from './src/pages/Profile.js'
 import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
 import SignUpScreen from './src/pages/SignUp'
@@ -41,17 +41,11 @@ const AppNavigator = createBottomTabNavigator({
   },
 });
 
-const AuthNavigator = createStackNavigator({
-  Login: LoginScreen,
-  SignUp: SignUpScreen,
-  initialRouteName: 'Login'
-})
-
 const FullNavigator = createSwitchNavigator({
   AuthLoading: {
     screen: AuthLoadingScreen
   },
-  Auth: AuthNavigator,
+  Login: LoginScreen,
   App: AppNavigator
 }, {
   initialRouteName: 'AuthLoading'
