@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import Unauthorized from '../../components/unauthorized.js'
+import EmptyList from '../../components/emptyList.js'
 import Loading from '../../components/loading.js'
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -33,10 +34,7 @@ export default class LeagueMatchesScreen extends React.Component {
   //Define your renderItem method the callback for the FlatList for rendering each item, and pass data as a argument.
   renderItem = ({ item }) => {
     return (
-      <View style={{
-        flexDirection: 'row',
-        height: 100,
-      }}>
+      <View style={styles.match}>
         <Text>
           Home Team: {item.HomeTeam}{"\n"}
           Away Team: {item.AwayTeam}{"\n"}
@@ -55,13 +53,18 @@ export default class LeagueMatchesScreen extends React.Component {
         return <Unauthorized />
       } else {
         return (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <FlatList
-                data={[]}
+          <View style={styles.container}>
+            <Text>League_Name Matches</Text>
+            {matches.length > 0 ?
+              <FlatList
+                style={styles.matchList}
+                data={matches}
                 renderItem={(item) => this.renderItem(item)}
-                ListEmptyComponent={this._listEmptyComponent}
                 keyExtractor={(item) => item.MatchID}
-            />
+              /> 
+              :
+              <EmptyList value="matches" />
+            }
           </View>
         )
       }
@@ -69,11 +72,23 @@ export default class LeagueMatchesScreen extends React.Component {
       return <Loading />
     }
   }
-
-  _listEmptyComponent() {
-    return (
-      <View><Text>No matches to display</Text></View>
-    )
-  }
 }
 
+const styles = StyleSheet.create({
+  matchList: {
+      flex: 1,
+      marginTop: 20,
+  },
+  match: {
+      alignItems: 'center',
+  },
+  container: {
+      flex: 1,
+      alignItems: 'center',
+      marginTop: 50,
+  },
+  emptyComponent: {
+    flex: 1,
+    justifyContent: 'center',
+  }
+})

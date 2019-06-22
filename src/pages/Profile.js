@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, Button } from 'react-native'
+import { View, Text, Button, Alert } from 'react-native'
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
 import { TextInput } from 'react-native-paper';
 import { conditionalExpression } from '@babel/types';
 import { _onLogout, _onPasswordChange } from '../services/auth'
 import AsyncStorage from '@react-native-community/async-storage'
+import base64 from 'base-64'
 
 export default class ProfileScreen extends React.Component {
   constructor(props) {
@@ -14,8 +15,8 @@ export default class ProfileScreen extends React.Component {
     }
 
     AsyncStorage.getItem('idToken').then(idToken => {
-      console.log("Id token: ", idToken)
-      var email = JSON.parse(atob(idToken.split('.')[1])).email
+      console.log("Email", JSON.parse(base64.decode(idToken.split('.')[1])))
+      var email = JSON.parse(base64.decode(idToken.split('.')[1])).email
       this.setState({
         email: email
       })
@@ -42,7 +43,15 @@ export default class ProfileScreen extends React.Component {
         <Button
           onPress={() => {
             _onPasswordChange().then(() => {
-              console.log("Password change done")
+              // Works on both iOS and Android
+              Alert.alert(
+                'Email Sent!',
+                'Check your inbox for a link to change your password.',
+                [
+                  { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false },
+              );
             })
           }}
           title="Change Password"
