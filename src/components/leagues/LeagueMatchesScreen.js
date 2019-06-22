@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import Unauthorized from '../../components/unauthorized.js'
-import EmptyList from '../../components/emptyList.js'
-import Loading from '../../components/loading.js'
+import Unauthorized from '../../components/Unauthorized'
+import EmptyList from '../../components/EmptyList'
+import Loading from '../../components/Loading'
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default class LeagueMatchesScreen extends React.Component {

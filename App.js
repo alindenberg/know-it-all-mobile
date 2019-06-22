@@ -14,7 +14,6 @@ import LeagueMatchesScreen from './src/components/leagues/LeagueMatchesScreen.js
 import ProfileScreen from './src/pages/Profile.js'
 import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
-import SignUpScreen from './src/pages/SignUp'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
