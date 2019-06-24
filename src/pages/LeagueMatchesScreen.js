@@ -15,7 +15,6 @@ export default class LeagueMatchesScreen extends React.Component {
   async componentDidMount() {
     try {
       var accessToken = await AsyncStorage.getItem('accessToken')
-      //Assign the promise unresolved first then get the data using the json method.
       const response = await fetch('http://localhost:8080/matches', {
         headers: {
           'authorization': accessToken

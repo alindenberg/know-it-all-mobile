@@ -9,9 +9,19 @@ async function _onLogin() {
             audience: 'http://localhost:8080',
             prompt: 'login',
         })
-        .then(async (credentials) => {
-            await AsyncStorage.setItem('accessToken', credentials.accessToken);
-            await AsyncStorage.setItem('idToken', credentials.idToken);
+        .then((credentials) => {
+            AsyncStorage.setItem('accessToken', credentials.accessToken);
+            AsyncStorage.setItem('idToken', credentials.idToken);
+            var userid = JSON.parse(base64.decode(credentials.idToken.split(".")[1])).sub
+            fetch('http://localhost:8080/users', {
+                method: 'POST',
+                headers: {
+                    authorization: credentials.accessToken
+                },
+                body: JSON.stringify({userid: userid})
+            }).catch((err) => {
+                console.log("Create user err: ", err)
+            })
         })
         .catch(error => console.log(error));
 };
