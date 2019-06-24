@@ -15,7 +15,6 @@ export default class ProfileScreen extends React.Component {
     }
 
     AsyncStorage.getItem('idToken').then(idToken => {
-      console.log("Email", JSON.parse(base64.decode(idToken.split('.')[1])))
       var email = JSON.parse(base64.decode(idToken.split('.')[1])).email
       this.setState({
         email: email

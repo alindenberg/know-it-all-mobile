@@ -9,8 +9,9 @@
 import React, {Component} from 'react';
 import {Button, Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
 import {createStackNavigator, createBottomTabNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
-import LeagueScreen from './src/components/leagues/LeagueScreen.js'
-import LeagueMatchesScreen from './src/components/leagues/LeagueMatchesScreen.js'
+import LeagueScreen from './src/pages/LeagueScreen.js'
+import LeagueMatchesScreen from './src/pages/LeagueMatchesScreen.js'
+import MatchScreen from './src/pages/Match.js'
 import ProfileScreen from './src/pages/Profile.js'
 import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
@@ -22,6 +23,11 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
+const MatchesNavigator = createStackNavigator({
+  MatchList: LeagueMatchesScreen,
+  Match: MatchScreen
+})
+
 const AppNavigator = createBottomTabNavigator({
   Profile: {
     screen: ProfileScreen
@@ -29,9 +35,7 @@ const AppNavigator = createBottomTabNavigator({
   Leagues: {
     screen: LeagueScreen
   },
-  LeagueMatches: {
-    screen: LeagueMatchesScreen
-  }
+  Matches: MatchesNavigator
 }, {
   initialRouteName: 'Profile',
   tabBarOptions: {

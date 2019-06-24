@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import Unauthorized from '../../components/Unauthorized'
-import EmptyList from '../../components/EmptyList'
-import Loading from '../../components/Loading'
+import { Button, StyleSheet, Text, View, FlatList } from 'react-native';
+import Unauthorized from '../components/Unauthorized'
+import EmptyList from '../components/EmptyList'
+import Loading from '../components/Loading'
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default class LeagueMatchesScreen extends React.Component {
@@ -40,9 +40,11 @@ export default class LeagueMatchesScreen extends React.Component {
           Away Team: {item.AwayTeam}{"\n"}
           Home Score: {item.HomeScore}{"\n"}
           Away Score: {item.AwayScore}{"\n"}
-          Match ID: {item.MatchID}{"\n"}
           Date: {item.Date}{"\n"}
         </Text>
+        <Button
+          onPress={() => { this.props.navigation.navigate('Match', {match: item})}}
+          title="Bet on Match" />
       </View>
     )
   }
@@ -61,7 +63,7 @@ export default class LeagueMatchesScreen extends React.Component {
                 data={matches}
                 renderItem={(item) => this.renderItem(item)}
                 keyExtractor={(item) => item.MatchID}
-              /> 
+              />
               :
               <EmptyList value="matches" />
             }
@@ -76,16 +78,16 @@ export default class LeagueMatchesScreen extends React.Component {
 
 const styles = StyleSheet.create({
   matchList: {
-      flex: 1,
-      marginTop: 20,
+    width: '100%',
+    marginTop: 20,
   },
   match: {
-      alignItems: 'center',
+    alignItems: 'center',
   },
   container: {
-      flex: 1,
-      alignItems: 'center',
-      marginTop: 50,
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 30,
   },
   emptyComponent: {
     flex: 1,
