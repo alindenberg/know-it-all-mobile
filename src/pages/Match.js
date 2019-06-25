@@ -45,35 +45,33 @@ export default class Match extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.matchHeading}>
-          <Text style={{ flex: 3, textAlign: 'center', fontSize: 24 }}>{this.match.HomeTeam}</Text>
-          <Text style={{ flex: 1, textAlign: 'center' }}> vs </Text>
-          <Text style={{ flex: 3, textAlign: 'center', fontSize: 24 }}>{this.match.AwayTeam}</Text>
-        </View>
-        <View style={{ flex: 4, alignItems: 'center' }}>
-          <Text>{this.matchDateArray[1]}/{this.matchDateArray[2]}/{this.matchDateArray[0]}</Text>
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', marginTop: 20 }}>
-            <ModalSelector
-              data={this.modalOptions}
-              initValue={this.state.prediction > -1 ? this.modalOptions[this.state.prediction].label : 'Select Result'}
-              labelExtractor={item => item.label}
-              onChange={(option) => {
-                if (option.key != this.state.prediction) {
-                  this.setState({ prediction: option.key, predictionIsSaved: false })
-                }
-              }}
-              animationType={'none'}
-            />
-            <Button
-              title={this.state.hasMadeBet ? "Edit Bet" : "Save Bet"}
-              onPress={this._onPredictionSaved}
-              disabled={this.state.predictionIsSaved}
-            />
+        <View style={{alignItems: 'center'}}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{ flex: 3, textAlign: 'center', fontSize: 24}}>{this.match.HomeTeam}</Text>
+            <Text style={{ flex: 1, textAlign: 'center', fontSize: 12, fontStyle: 'italic'}}>vs</Text>
+            <Text style={styles.teamText}>{this.match.AwayTeam}</Text>
           </View>
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
-            {this.state.hasMadeBet ? <Text>Edit your existing bet!</Text> : <Text>Create a new bet!</Text>}
-          </View>
+          <Text style={{marginTop: 20}}>{this.matchDateArray[1]}-{this.matchDateArray[2]}-{this.matchDateArray[0]}</Text>
         </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
+          <Text style={{marginRight: 5, fontSize: 20}}>{this.state.hasMadeBet ? "Edit Bet:" : "Place Bet:"}</Text>
+          <ModalSelector
+            data={this.modalOptions}
+            initValue={this.state.prediction > -1 ? this.modalOptions[this.state.prediction].label : 'Select Result'}
+            labelExtractor={item => item.label}
+            onChange={(option) => {
+              if (option.key != this.state.prediction) {
+                this.setState({ prediction: option.key, predictionIsSaved: false })
+              }
+            }}
+            animationType={'none'}
+          />
+        </View>
+        <Button
+            title={"Save Bet"}
+            onPress={this._onPredictionSaved}
+            disabled={this.state.predictionIsSaved}
+          />
       </View>
     )
   }
@@ -111,13 +109,16 @@ export default class Match extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     marginTop: 20
   },
   matchHeading: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+  },
+  teamText: {
+    flex: 3,
+    textAlign: 'center',
+    fontSize: 24
   }
 })

@@ -4,7 +4,6 @@ import {
   TextInput,
   Button,
 } from 'react-native'
-import AsyncStorage from '@react-native-community/async-storage'
 import {_onLogin} from '../services/Auth'
 
 export default class LoginScreen extends React.Component {

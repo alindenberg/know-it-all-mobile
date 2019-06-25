@@ -6,36 +6,41 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Button, Platform, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
 import {createStackNavigator, createBottomTabNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
+import AllLeagueScreen from './src/pages/AllLeagueScreen.js'
 import LeagueScreen from './src/pages/LeagueScreen.js'
-import LeagueMatchesScreen from './src/pages/LeagueMatchesScreen.js'
 import MatchScreen from './src/pages/Match.js'
 import ProfileScreen from './src/pages/Profile.js'
 import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-const MatchesNavigator = createStackNavigator({
-  MatchList: LeagueMatchesScreen,
-  Match: MatchScreen
+const LeagueNavigator = createStackNavigator({
+  AllLeagueScreen: {
+    screen: AllLeagueScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: `All Leagues`,
+    }),
+  },
+  LeagueScreen: {
+    screen: LeagueScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: `${navigation.state.params.league.Name}`,
+    }),
+  },
+  Match: {
+    screen: MatchScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: `Match`,
+    }),
+  },
+}, {
+  initialRouteName: 'AllLeagueScreen'
 })
 
+// Leaderboards | Leagues | Friends | Profile
 const AppNavigator = createBottomTabNavigator({
-  Profile: {
-    screen: ProfileScreen
-  },
-  Leagues: {
-    screen: LeagueScreen
-  },
-  Matches: MatchesNavigator
+  Profile: ProfileScreen,
+  Leagues: LeagueNavigator
 }, {
   initialRouteName: 'Profile',
   tabBarOptions: {
@@ -45,9 +50,7 @@ const AppNavigator = createBottomTabNavigator({
 });
 
 const FullNavigator = createSwitchNavigator({
-  AuthLoading: {
-    screen: AuthLoadingScreen
-  },
+  AuthLoading: AuthLoadingScreen,
   Login: LoginScreen,
   App: AppNavigator
 }, {
