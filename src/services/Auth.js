@@ -12,13 +12,13 @@ async function _onLogin() {
         .then((credentials) => {
             AsyncStorage.setItem('accessToken', credentials.accessToken);
             AsyncStorage.setItem('idToken', credentials.idToken);
-            var userid = JSON.parse(base64.decode(credentials.idToken.split(".")[1])).sub
+            var idToken = JSON.parse(base64.decode(credentials.idToken.split(".")[1]))
             fetch('http://localhost:8080/users', {
                 method: 'POST',
                 headers: {
                     authorization: credentials.accessToken
                 },
-                body: JSON.stringify({userid: userid})
+                body: JSON.stringify({userid: idToken.sub, email: idToken.email})
             }).catch((err) => {
                 console.log("Create user err: ", err)
             })

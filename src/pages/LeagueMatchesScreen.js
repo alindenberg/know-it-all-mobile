@@ -4,31 +4,47 @@ import Unauthorized from '../components/Unauthorized'
 import EmptyList from '../components/EmptyList'
 import Loading from '../components/Loading'
 import AsyncStorage from '@react-native-community/async-storage';
+import base64 from 'base-64'
 
 export default class LeagueMatchesScreen extends React.Component {
   state = {
+    user: null,
     matches: [],
     isLoading: true,
     isAuthorized: false
   }
   //Define your componentDidMount lifecycle hook that will retrieve data.
-  async componentDidMount() {
-    try {
-      var accessToken = await AsyncStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:8080/matches', {
-        headers: {
-          'authorization': accessToken
-        }
-      });
-      if (response.status == 401) {
+  async componentWillMount() {
+    var accessToken = await AsyncStorage.getItem('accessToken')
+
+    await fetch('http://localhost:8080/matches', {
+      headers: {
+        'authorization': accessToken
+      }
+    }).then(matchesResponse => {
+      console.log("matches response ", matchesResponse)
+      if (matchesResponse.status == 401) {
         this.setState({ matches: [], isLoading: false, isAuthorized: false })
       } else {
-        var matches = await response.json()
-        this.setState({ matches: matches, isLoading: false, isAuthorized: true });
+        matchesResponse.json().then(matches => {
+          this.setState({ matches: matches, isLoading: false, isAuthorized: true });
+        })
       }
-    } catch (err) {
-      console.log("Error fetching data-----------", err);
-    }
+    })
+
+    // fetch user in the background
+    var userId = JSON.parse(base64.decode(accessToken.split(".")[1])).sub
+    fetch(`http://localhost:8080/users/${userId}`, {
+      headers: {
+        'authorization': accessToken
+      }
+    }).then((res) => {
+      return res.json()
+    }).then(user => {
+      this.setState({user:  user})
+    }).catch(err => {
+      console.log("Unsuccessfully fetching user on LeagueMatches page ", err)
+    })
   }
   //Define your renderItem method the callback for the FlatList for rendering each item, and pass data as a argument.
   renderItem = ({ item }) => {
@@ -42,7 +58,7 @@ export default class LeagueMatchesScreen extends React.Component {
           Date: {item.Date}{"\n"}
         </Text>
         <Button
-          onPress={() => { this.props.navigation.navigate('Match', {match: item})}}
+          onPress={() => { this.props.navigation.navigate('Match', { match: item, user: this.state.user }) }}
           title="Bet on Match" />
       </View>
     )
