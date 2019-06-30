@@ -31,8 +31,8 @@ export default class LeagueScreen extends React.Component {
         borderBottomWidth: 1
       }}>
         <View style={{ justifyContent: 'flex-start', marginLeft: 10 }}>
-          <Text style={{ fontSize: 30 }}>{item.Name}</Text>
-          <Text style={{ fontSize: 10 }}>{item.Country}, Division {item.Division}</Text>
+          <Text style={{ fontSize: 20 }}>{item.Name}</Text>
+          <Text style={{ fontSize: 12 }}>{item.Country}, Division {item.Division}</Text>
         </View>
         <View style={styles.iconStyle}>
           <Icon

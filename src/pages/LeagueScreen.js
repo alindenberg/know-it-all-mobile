@@ -13,27 +13,28 @@ export default class LeagueScreen extends React.Component {
     this.state = {
       user: null,
       isLoading: true,
+      leagueTeams: []
     }
     this.league = props.navigation.getParam('league')
-    console.log("League is ", this.league)
   }
   //Define your componentDidMount lifecycle hook that will retrieve data.
   async componentWillMount() {
     var accessToken = await AsyncStorage.getItem('accessToken')
 
-    // await fetch('http://localhost:8080/matches', {
-    //   headers: {
-    //     'authorization': accessToken
-    //   }
-    // }).then(matchesResponse => {
-    //   if (matchesResponse.status == 401) {
-    //     this.setState({ matches: [], isLoading: false, isAuthorized: false })
-    //   } else {
-    //     matchesResponse.json().then(matches => {
-    //       this.setState({ matches: matches, isLoading: false, isAuthorized: true });
-    //     })
-    //   }
-    // })
+    // Pre-fetch all teams in the league so we can render their names / logos for the match list
+    // without needing to fetch them individually each time
+    await fetch(`http://localhost:8080/leagues/${this.league.LeagueID}/teams`, {
+      headers: {
+        'authorization': accessToken
+      }
+    }).then(res => {
+      console.log(res)
+      return res.json()
+    }).then(teams => {
+      this.setState({ leagueTeams: teams })
+    }).catch(err => {
+      console.log("Error fetching league teams : ", err)
+    })
 
     // fetch user in the background
     var userId = JSON.parse(base64.decode(accessToken.split(".")[1])).sub
@@ -50,16 +51,39 @@ export default class LeagueScreen extends React.Component {
     })
   }
 
-  goToMatch = (navigation, match) => {
-    navigation.navigate('Match', { match: match, user: this.state.user })
+  goToMatch = (navigation, match, homeTeam, awayTeam) => {
+    navigation.navigate('Match', {
+      match: match,
+      user: this.state.user,
+      homeTeam: homeTeam,
+      awayTeam: awayTeam
+    })
+  }
+
+  getTeam = (teamId) => {
+    for (var i = 0; i < this.state.leagueTeams.length; i++) {
+      if (this.state.leagueTeams[i].TeamID == teamId) {
+        return this.state.leagueTeams[i]
+      }
+    }
+    return null
   }
   //Define your renderItem method the callback for the FlatList for rendering each item, and pass data as a argument.
-  renderItem = ({ item }) => {
+  renderMatch = ({ item }) => {
+    var homeTeam = this.getTeam(item.HomeTeamID)
+    var awayTeam = this.getTeam(item.AwayTeamID)
+    if (homeTeam == null || awayTeam == null) {
+      return null
+    }
     return (
-      <View style={{ flexDirection: 'row', padding: 5, borderBottomWidth: 1 }}>
-        <View style={{ justifyContent: 'flex-start', marginLeft: 10 }}>
-          <Text style={{ fontSize: 24 }}>{item.HomeTeam} vs {item.AwayTeam}</Text>
-          <Text style={{fontSize: 12, fontStyle: 'italic'}}>{item.Date.split("T")[0]}</Text>
+      <View style={{ flex: 1, flexDirection: 'row', padding: 5, borderBottomWidth: 1 }}>
+        <View style={{ flex: 9 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <Text style={{ fontSize: 20, fontStyle: 'italic' }}>{homeTeam.Name}</Text>
+            <Text style={{ fontSize: 20 }}> vs </Text>
+            <Text style={{ fontSize: 20, fontStyle: 'italic' }}>{awayTeam.Name}</Text>
+          </View>
+          <Text style={{ fontSize: 12, fontStyle: 'italic' }}>{item.Date.split("T")[0]}</Text>
         </View>
         <View style={styles.iconView}>
           <Icon
@@ -67,14 +91,14 @@ export default class LeagueScreen extends React.Component {
             name="angle-right"
             type="font-awesome"
             color='#5388d0'
-            onPress={() => { this.goToMatch(this.props.navigation, item) }}>
+            onPress={() => { this.goToMatch(this.props.navigation, item, homeTeam, awayTeam) }}>
           </Icon>
         </View>
       </View>
     )
   }
   render() {
-    const matches = this.league.Matches
+    var matches = this.league.UpcomingMatches
     if (matches == null) {
       matches = []
     }
@@ -88,7 +112,7 @@ export default class LeagueScreen extends React.Component {
             <FlatList
               style={styles.matchList}
               data={matches}
-              renderItem={(item) => this.renderItem(item)}
+              renderItem={(match) => this.renderMatch(match)}
               keyExtractor={(item) => item.MatchID}
             />
             :
@@ -124,8 +148,6 @@ const styles = StyleSheet.create({
   },
   iconView: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
     marginRight: 10,
     alignSelf: 'center'
   }

@@ -25,7 +25,10 @@ export default class LoginScreen extends React.Component {
           onChangeText={(text) => this.setState({ text })}
         />
         <Button title="Login" onPress={async () => {
-          await _onLogin().then(async () => {
+          await _onLogin().then(async (isSignup) => {
+            // if(isSignup) {
+            //   this.props.navaigation.navigate('Signup')
+            // }
             this.props.navigation.navigate('Profile')
           }).catch(err => {
             console.log("Login error ", err)

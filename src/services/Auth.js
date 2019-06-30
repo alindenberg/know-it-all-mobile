@@ -3,7 +3,7 @@ import base64 from 'base-64'
 import AsyncStorage from '@react-native-community/async-storage'
 async function _onLogin() {
     var auth0 = new Auth0({ domain: 'dev-b36cotoe.auth0.com', clientId: 'tiVh3DouTapxG785vcApzzEJHlj8T92s' });
-    await auth0.webAuth
+    var accessToken = await auth0.webAuth
         .authorize({
             scope: 'openid email',
             audience: 'http://localhost:8080',
@@ -12,22 +12,31 @@ async function _onLogin() {
         .then((credentials) => {
             AsyncStorage.setItem('accessToken', credentials.accessToken);
             AsyncStorage.setItem('idToken', credentials.idToken);
-            var idToken = JSON.parse(base64.decode(credentials.idToken.split(".")[1]))
-            fetch('http://localhost:8080/users', {
-                method: 'POST',
-                headers: {
-                    authorization: credentials.accessToken
-                },
-                body: JSON.stringify({userid: idToken.sub, email: idToken.email})
-            }).catch((err) => {
-                console.log("Create user err: ", err)
-            })
+            return credentials.accessToken
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+            console.log("Auth0 login error: ", error)
+            throw error
+        });
+
+    var idCreds = JSON.parse(base64.decode(accessToken.split(".")[1]))
+    return await fetch('http://localhost:8080/users', {
+            method: 'POST',
+            headers: {
+                authorization: accessToken
+            },
+            body: JSON.stringify({userid: idCreds.sub, email: idCreds.email})
+        }).then((res) => {
+            if(res.status == 409) {
+                return false    
+            }
+            return true
+        })
 };
 
 async function _onLogout() {
     await AsyncStorage.removeItem('accessToken')
+    await AsyncStorage.removeItem('idToken');
 }
 
 async function _onPasswordChange() {

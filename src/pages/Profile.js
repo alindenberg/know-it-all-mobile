@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, Button, Alert } from 'react-native'
-import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
-import { TextInput } from 'react-native-paper';
-import { conditionalExpression } from '@babel/types';
 import { _onLogout, _onPasswordChange } from '../services/Auth'
 import AsyncStorage from '@react-native-community/async-storage'
 import base64 from 'base-64'

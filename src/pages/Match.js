@@ -13,14 +13,16 @@ export default class Match extends React.Component {
     super(props)
     this.match = this.props.navigation.getParam("match")
     this.user = this.props.navigation.getParam("user")
+    this.homeTeam = this.props.navigation.getParam("homeTeam")
+    this.awayTeam = this.props.navigation.getParam("awayTeam")
     // Get YYYY-MM-DD array form of the match date
     this.matchDateArray = this.match.Date.split("T")[0].split("-"),
 
-    this.modalOptions = [
-      { label: this.match.HomeTeam + " wins", key: 0 },
-      { label: this.match.AwayTeam + " wins", key: 1 },
-      { label: "Draw", key: 2 }
-    ]
+      this.modalOptions = [
+        { label: this.homeTeam.Name + " wins", key: 0 },
+        { label: this.awayTeam.Name + " wins", key: 1 },
+        { label: "Draw", key: 2 }
+      ]
 
     this.state = {
       hasMadeBet: false,
@@ -45,16 +47,16 @@ export default class Match extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{alignItems: 'center'}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{ flex: 3, textAlign: 'center', fontSize: 24}}>{this.match.HomeTeam}</Text>
-            <Text style={{ flex: 1, textAlign: 'center', fontSize: 12, fontStyle: 'italic'}}>vs</Text>
-            <Text style={styles.teamText}>{this.match.AwayTeam}</Text>
+        <View style={{ alignItems: 'center' }}>
+          <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+            <Text style={{ fontSize: 24 }}>{this.homeTeam.Name}</Text>
+            <Text style={{ fontSize: 12, fontStyle: 'italic', marginTop: 10, marginBottom: 10 }}>vs</Text>
+            <Text style={{ fontSize: 24 }}>{this.awayTeam.Name}</Text>
           </View>
-          <Text style={{marginTop: 20}}>{this.matchDateArray[1]}-{this.matchDateArray[2]}-{this.matchDateArray[0]}</Text>
+          <Text style={{ marginTop: 20 }}>Date: {this.matchDateArray[1]}-{this.matchDateArray[2]}-{this.matchDateArray[0]}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
-          <Text style={{marginRight: 5, fontSize: 20}}>{this.state.hasMadeBet ? "Edit Bet:" : "Place Bet:"}</Text>
+          <Text style={{ marginRight: 5, fontSize: 20 }}>{this.state.hasMadeBet ? "Edit Bet:" : "Place Bet:"}</Text>
           <ModalSelector
             data={this.modalOptions}
             initValue={this.state.prediction > -1 ? this.modalOptions[this.state.prediction].label : 'Select Result'}
@@ -68,10 +70,10 @@ export default class Match extends React.Component {
           />
         </View>
         <Button
-            title={"Save Bet"}
-            onPress={this._onPredictionSaved}
-            disabled={this.state.predictionIsSaved}
-          />
+          title={"Save Bet"}
+          onPress={this._onPredictionSaved}
+          disabled={this.state.predictionIsSaved}
+        />
       </View>
     )
   }
@@ -94,14 +96,14 @@ export default class Match extends React.Component {
 
   // Update client side version of user bets array
   updateLocalUserBet = (matchId, prediction) => {
-    if(this.state.hasMadeBet) {
+    if (this.state.hasMadeBet) {
       for (var i = 0; i < this.user.Bets.length; i++) {
         if (this.user.Bets[i].MatchID == matchId) {
           this.user.Bets[i].Prediction = prediction
         }
       }
     } else {
-      this.user.Bets.push({MatchID: this.match.MatchID, Prediction: this.state.prediction})
+      this.user.Bets.push({ MatchID: this.match.MatchID, Prediction: this.state.prediction })
     }
   }
 }
