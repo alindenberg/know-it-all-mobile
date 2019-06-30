@@ -2,28 +2,25 @@ import React from 'react'
 import {
     View,
     Text,
-    FlatList
+    FlatList,
+    StyleSheet,
+    TouchableOpacity
 } from 'react-native'
 import EmptyList from './EmptyList'
-
 
 export default class LeaderboardList extends React.Component {
     constructor(props) {
         super(props)
-        console.log(this.props)
     }
 
-    renderItem = ({ item }) =>  {
-        console.log("item is ", item)
+    renderItem = ({ index, item }) => {
         return (
-            <View style={{flex: 1, flexDirection: 'row', borderBottomWidth: 1}}>
-                <View style={{flexDirection: 'column'}}>
-                    <Text>{item.Email}</Text>
-                    <Text>{item.Wins}</Text>
-                    <Text>{item.Losses}</Text>
-                    <Text>{item.WinPercentage}</Text>
-                </View>
-            </View>
+            <TouchableOpacity onPress={() => {this.props.navigation.navigate('Profile')}}style={styles.itemStyle}>
+                <Text style={{fontSize: 14}}>#{index + 1})</Text>
+                <Text style={{ fontSize: 14, flex: 3, marginLeft: 10 }}>{item.Email}</Text>
+                <Text style={{ fontSize: 14, flex: 1 }}>{item.Wins}-{item.Losses}</Text>
+                <Text style={{ fontSize: 14, flex: 1 }}>{item.WinPercentage}%</Text>
+            </TouchableOpacity>
         )
     }
 
@@ -32,7 +29,7 @@ export default class LeaderboardList extends React.Component {
             <View>
                 {this.props.data.length > 0 ?
                     <FlatList
-                        style={{ width: '100%'}}
+                        style={{ width: '100%' }}
                         data={this.props.data}
                         renderItem={(item) => this.renderItem(item)}
                         keyExtractor={(item) => item.UserID}
@@ -44,3 +41,12 @@ export default class LeaderboardList extends React.Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    itemStyle: {
+        padding: 5,
+        flexDirection: 'row',
+        flex: 1,
+        borderBottomWidth: 1
+    }
+})

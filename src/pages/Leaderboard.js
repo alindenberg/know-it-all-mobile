@@ -5,7 +5,7 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import LeaderboardList from '../components/LeaderboardList'
 import base64 from 'base-64'
-import { ActivityIndicator } from 'react-native-paper';
+import Loading from '../components/Loading';
 
 export default class Leaderboard extends React.Component {
     constructor(props) {
@@ -56,10 +56,8 @@ export default class Leaderboard extends React.Component {
     };
 
     render() {
-        console.log("is loading : ", this.state.isLoading)
         if (this.state.isLoading) {
-            console.log("Returning activity indicator")
-            return <ActivityIndicator />
+            return <Loading />
         }
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -67,8 +65,8 @@ export default class Leaderboard extends React.Component {
                     style={{ marginTop: 20 }}
                     navigationState={this.state}
                     renderScene={SceneMap({
-                        first: () => <LeaderboardList data={this.state.friendLeaderboard} />,
-                        second: () => <LeaderboardList data={this.state.globalLeaderboard} />,
+                        first: () => <LeaderboardList navigation={this.props.navigation} data={this.state.friendLeaderboard} />,
+                        second: () => <LeaderboardList navigation={this.props.navigation} data={this.state.globalLeaderboard} />,
                     })}
                     onIndexChange={index => this.setState({ index })}
                     initialLayout={{ height: 100, width: 100 }}
