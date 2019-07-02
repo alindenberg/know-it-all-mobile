@@ -18,7 +18,7 @@ export default class LeagueScreen extends React.Component {
     this.league = props.navigation.getParam('league')
   }
   //Define your componentDidMount lifecycle hook that will retrieve data.
-  async componentWillMount() {
+  async componentDidMount() {
     var accessToken = await AsyncStorage.getItem('accessToken')
 
     // Pre-fetch all teams in the league so we can render their names / logos for the match list
@@ -54,6 +54,7 @@ export default class LeagueScreen extends React.Component {
   goToMatch = (navigation, match, homeTeam, awayTeam) => {
     navigation.navigate('Match', {
       match: match,
+      leagueId: this.league.LeagueID,
       user: this.state.user,
       homeTeam: homeTeam,
       awayTeam: awayTeam

@@ -8,24 +8,17 @@ import {
 } from 'react-native'
 import EmptyList from './EmptyList'
 
-export default class LeaderboardList extends React.Component {
+export default class UserList extends React.Component {
     constructor(props) {
         super(props)
     }
 
     renderItem = ({ index, item }) => {
-        console.log("ITEM ", item)
         return (
-            <TouchableOpacity 
-                onPress={() => {
-                    console.log("ON PRESS ITEM USERID ", item.UserID)
-                    this.props.navigation.navigate('UserProfile', {userId: item.UserID})
-                }}
-                style={styles.itemStyle}>
+            <TouchableOpacity onPress={() => {this.props.navigation.navigate('Profile')}}style={styles.itemStyle}>
                 <Text style={{fontSize: 14}}>#{index + 1})</Text>
                 <Text style={{ fontSize: 14, flex: 3, marginLeft: 10 }}>{item.Email}</Text>
-                <Text style={{ fontSize: 14, flex: 1 }}>{item.Wins}-{item.Losses}</Text>
-                <Text style={{ fontSize: 14, flex: 1 }}>{item.WinPercentage}%</Text>
+                <Text style={{ fontSize: 14, flex: 3, marginLeft: 10 }}>{item.Wins}-{item.Losses}</Text>
             </TouchableOpacity>
         )
     }

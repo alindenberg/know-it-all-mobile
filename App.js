@@ -35,10 +35,25 @@ const LeagueNavigator = createStackNavigator({
   initialRouteName: 'AllLeagueScreen'
 })
 
+const ProfileNavigator = createStackNavigator({
+  Profile: ProfileScreen,
+  Match: MatchScreen
+}, {
+  initialRouteName: 'Profile'
+})
+
+const LeaderboardNavigator = createStackNavigator({
+  Leaderboard: LeaderboardScreen,
+  UserProfile: ProfileScreen,
+  Match: MatchScreen
+}, {
+  initialRouteName: 'Leaderboard'
+})
+
 // Leaderboards | Leagues | Friends | Profile
 const AppNavigator = createBottomTabNavigator({
-  Profile: ProfileScreen,
-  Leaderboard: LeaderboardScreen,
+  Profile: ProfileNavigator,
+  Leaderboard: LeaderboardNavigator,
   Leagues: LeagueNavigator
 }, {
   initialRouteName: 'Profile',

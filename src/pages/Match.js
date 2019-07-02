@@ -12,6 +12,7 @@ export default class Match extends React.Component {
   constructor(props) {
     super(props)
     this.match = this.props.navigation.getParam("match")
+    this.leagueId = this.props.navigation.getParam("leagueId")
     this.user = this.props.navigation.getParam("user")
     this.homeTeam = this.props.navigation.getParam("homeTeam")
     this.awayTeam = this.props.navigation.getParam("awayTeam")
@@ -31,7 +32,7 @@ export default class Match extends React.Component {
     }
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     AsyncStorage.getItem("accessToken").then((token) => {
       this.setState({ accessToken: token })
     })
@@ -86,6 +87,7 @@ export default class Match extends React.Component {
       },
       body: JSON.stringify({
         matchId: this.match.MatchID,
+        leagueId: this.leagueId,
         prediction: this.state.prediction
       })
     })

@@ -26,24 +26,23 @@ export default class Leaderboard extends React.Component {
         AsyncStorage.getItem('accessToken').then(accessToken => {
             var userId = JSON.parse(base64.decode(accessToken.split(".")[1])).sub
             fetch("http://localhost:8080/leaderboard", {
-                // headers: {
-                //     authorization: accessToken
-                // },
+                headers: {
+                    authorization: accessToken
+                },
                 method: 'GET'
             }).then(res => {
                 return res.json()
             }).then(leaderboard => {
                 this.state.globalLeaderboard = leaderboard
                 fetch(`http://localhost:8080/leaderboard/${userId}`, {
-                    // headers: {
-                    //     authorization: accessToken
-                    // },
+                    headers: {
+                        authorization: accessToken
+                    },
                     method: 'GET'
                 }).then(res => {
                     return res.json()
                 }).then(leaderboard => {
                     this.state.friendLeaderboard = leaderboard
-                    console.log(this.state)
                     this.state.isLoading = false
                     this.setState(this.state)
                 }).catch(err => {
@@ -60,9 +59,8 @@ export default class Leaderboard extends React.Component {
             return <Loading />
         }
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
                 <TabView
-                    style={{ marginTop: 20 }}
                     navigationState={this.state}
                     renderScene={SceneMap({
                         first: () => <LeaderboardList navigation={this.props.navigation} data={this.state.friendLeaderboard} />,
@@ -71,7 +69,7 @@ export default class Leaderboard extends React.Component {
                     onIndexChange={index => this.setState({ index })}
                     initialLayout={{ height: 100, width: 100 }}
                 />
-            </SafeAreaView>
+            </View>
         );
     }
 }
