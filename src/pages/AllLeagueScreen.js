@@ -27,11 +27,11 @@ export default class LeagueScreen extends React.Component {
       <ScrollView>
         {this.state.leagues.map((league, index) => {
           return (
-            <Card containerStyle={{ padding: 0 }} >
+            <Card>
               <ListItem
                 key={index}
                 title={league.Name}
-                leftAvatar={{source: {uri: league.LogoURL}}}
+                leftAvatar={{source: {uri: league.LogoURL}, size: 'medium', rounded: false}}
                 onPress={() => this.props.navigation.navigate("LeagueScreen", {league: league})}
               />
             </Card>
