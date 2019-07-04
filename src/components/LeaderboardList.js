@@ -4,6 +4,7 @@ import {
     Text,
     FlatList,
     StyleSheet,
+    ScrollView,
     TouchableOpacity
 } from 'react-native'
 import {
@@ -18,7 +19,7 @@ export default class LeaderboardList extends React.Component {
     }
     render() {
         return (
-            <View>
+            <ScrollView>
                 {this.props.data.length > 0 ?
                     this.props.data.map((user, index) => {
                         return (
@@ -38,7 +39,7 @@ export default class LeaderboardList extends React.Component {
                     :
                     <EmptyList value="users" />
                 }
-            </View>
+            </ScrollView>
         )
     }
 }

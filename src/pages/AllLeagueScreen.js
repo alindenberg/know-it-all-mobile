@@ -1,7 +1,7 @@
 import React from 'react';
-import { Icon } from 'react-native-elements';
-import { Text, View, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Card, ListItem } from 'react-native-elements'
+import Loading from '../components/Loading';
 
 export default class LeagueScreen extends React.Component {
   state = {
@@ -19,55 +19,26 @@ export default class LeagueScreen extends React.Component {
       this.setState({ isLoading: false });
     })
   }
-
-  goToLeague = (navigation, league) => {
-    navigation.navigate("LeagueScreen", { league: league })
-  }
-  //Define your renderItem method the callback for the FlatList for rendering each item, and pass data as a argument.
-  renderItem = ({ item }) => {
-    return (
-      <TouchableOpacity
-        onPress={() => { this.goToLeague(this.props.navigation, item) }}
-        style={{
-          flexDirection: 'row',
-          padding: 5,
-          borderBottomWidth: 1
-        }}>
-        <View style={{ justifyContent: 'flex-start', marginLeft: 10 }}>
-          <Text style={{ fontSize: 20 }}>{item.Name}</Text>
-          <Text style={{ fontSize: 12 }}>{item.Country}, Division {item.Division}</Text>
-        </View>
-        <View style={styles.iconStyle}>
-          <Icon
-            size={34}
-            name="angle-right"
-            type="font-awesome"
-            color='#5388d0'>
-          </Icon>
-        </View>
-      </TouchableOpacity>
-    )
-  }
   render() {
-    const { leagues, isLoading } = this.state;
-    if (!isLoading) {
-      return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <FlatList
-            style={{ width: '100%', borderTopWidth: 1 }}
-            data={leagues}
-            renderItem={(item) => this.renderItem(item)}
-            keyExtractor={(item) => item.LeagueID}
-          />
-        </View>
-      )
-    } else {
-      return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <ActivityIndicator />
-        </View>
-      )
+    if (this.state.isLoading) {
+      return <Loading />
     }
+    return (
+      <ScrollView>
+        {this.state.leagues.map((league, index) => {
+          return (
+            <Card containerStyle={{ padding: 0 }} >
+              <ListItem
+                key={index}
+                title={league.Name}
+                leftAvatar={{source: {uri: league.LogoURL}}}
+                onPress={() => this.props.navigation.navigate("LeagueScreen", {league: league})}
+              />
+            </Card>
+          )
+        })}
+        </ScrollView>
+    )
   }
 }
 
