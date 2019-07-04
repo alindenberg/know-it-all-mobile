@@ -7,11 +7,11 @@ import {
     TouchableOpacity,
     Image
 } from 'react-native'
-import { ListItem } from 'react-native-elements'
-import base64 from 'base-64'
 import EmptyList from './EmptyList'
 import AsyncStorage from '@react-native-community/async-storage';
 import Loading from './Loading';
+
+var moment = require('moment');
 
 export default class BetList extends React.Component {
     constructor(props) {
@@ -32,10 +32,15 @@ export default class BetList extends React.Component {
                 requests.push(promise)
             }
 
-            await Promise.all(requests).then(() => {
-                this.state.isLoading = false
-                this.setState(this.state)
-            }).catch(err => {
+            await Promise.all(requests).finally(() => {
+                // sort bets from future -> past
+                var sortedBets = this.state.bets.sort(function(bet1, bet2) {
+                    var date1 = moment.utc(bet1.match.Date)
+                    var date2 = moment.utc(bet2.match.Date)
+                    return (date1 > date2 ? -1 : (date1 < date2 ? 1 : 0));
+                })
+
+                this.state.bets = sortedBets
                 this.state.isLoading = false
                 this.setState(this.state)
             })
@@ -109,7 +114,7 @@ export default class BetList extends React.Component {
                     <View style={styles.itemSection}>
                         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
                             <Image style={styles.image} source={{ uri: bet.homeTeam.LogoURL }}></Image>
-                            <Text style={{fontSize: 20}}>{bet.homeTeam.Name}</Text>
+                            {/* <Text style={{fontSize: 20}}>{bet.homeTeam.Name}</Text> */}
                         </View>
                     </View>
                     <View style={{justifyContent: 'center'}}>
@@ -125,7 +130,7 @@ export default class BetList extends React.Component {
                     <View style={styles.itemSection}>
                         <View style={{ flexDirection: 'column' }}>
                             <Image style={styles.image} source={{ uri: bet.awayTeam.LogoURL }}></Image>
-                            <Text style={{fontSize: 20}}>{bet.awayTeam.Name}</Text>
+                            {/* <Text style={{fontSize: 20}}>{bet.awayTeam.Name}</Text> */}
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -161,7 +166,6 @@ const styles = StyleSheet.create({
     },
     image: {
         height: 75,
-        borderRadius: 40,
         width: 75
     },
     itemSection: {

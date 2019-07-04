@@ -82,8 +82,8 @@ export default class Match extends React.Component {
           <Text style={styles.teamScore}>-</Text>
           <Text style={styles.teamScore}>{this.match.AwayTeamScore}</Text>
         </View>
-        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={{ fontSize: 24}}>{moment.utc(this.match.Date).format('MMMM Do, YYYY')}</Text>
+        <View style={styles.matchDateSection}>
+          <Text style={styles.betText}>{moment.utc(this.match.Date).format('MMMM Do, YYYY')}</Text>
         </View>
         <View style={styles.matchBetSection}>
           {this._getBetSection(bet)}
@@ -180,7 +180,7 @@ export default class Match extends React.Component {
   }
 
   createBet() {
-    fetch(`http://localhost:8080/users/${this.user.UserID}/bets}`, {
+    fetch(`http://localhost:8080/users/${this.user.UserID}/bets`, {
       method: 'POST',
       headers: {
         authorization: this.state.accessToken
@@ -248,5 +248,11 @@ const styles = StyleSheet.create({
   },
   betText: {
     fontSize: 24
+  },
+  matchDateSection: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
