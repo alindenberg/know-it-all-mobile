@@ -117,12 +117,12 @@ export default class BetList extends React.Component {
             <ScrollView style={{width: '100%', height: '100%'}}>
               {this.state.bets.map((bet, index) => {
                 return (
-                  <Card>
+                  <Card key={index}>
                     <ListItem
                       key={index}
                       title={`${bet.match.HomeTeamScore} - ${bet.match.AwayTeamScore}`}
                       subtitle={`Bet: ${this.getBetResult(bet)}`}
-                      contentContainerStyle={{fontSize: 24, alignItems: 'center'}}
+                      contentContainerStyle={{alignItems: 'center'}}
                       leftAvatar={{source: {uri: bet.homeTeam.LogoURL}, size: 'large', rounded: false, overlayContainerStyle: {backgroundColor: 'white'}}}
                       rightAvatar={{source: {uri: bet.awayTeam.LogoURL}, size: 'large', rounded: false, overlayContainerStyle: {backgroundColor: 'white'}}}
                       onPress={() => this.goToMatch(bet, bet.match, bet.homeTeam, bet.awayTeam)}

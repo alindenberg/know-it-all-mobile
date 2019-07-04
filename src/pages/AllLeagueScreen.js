@@ -27,7 +27,7 @@ export default class LeagueScreen extends React.Component {
       <ScrollView>
         {this.state.leagues.map((league, index) => {
           return (
-            <Card>
+            <Card key={index}>
               <ListItem
                 key={index}
                 title={league.Name}

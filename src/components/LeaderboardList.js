@@ -23,7 +23,7 @@ export default class LeaderboardList extends React.Component {
                 {this.props.data.length > 0 ?
                     this.props.data.map((user, index) => {
                         return (
-                            <Card containerStyle={{ padding: 0 }} >
+                            <Card key={index} containerStyle={{ padding: 0 }} >
                                 <ListItem
                                     key={index}
                                     roundAvatar
