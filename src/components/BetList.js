@@ -4,9 +4,11 @@ import {
     Text,
     FlatList,
     StyleSheet,
+    ScrollView,
     TouchableOpacity,
     Image
 } from 'react-native'
+import { Card, ListItem } from 'react-native-elements'
 import EmptyList from './EmptyList'
 import AsyncStorage from '@react-native-community/async-storage';
 import Loading from './Loading';
@@ -107,54 +109,29 @@ export default class BetList extends React.Component {
         })
     }
 
-    renderItem = ({ index, item }) => {
-        var bet = item
-        return (
-                <TouchableOpacity style={styles.itemStyle} onPress={() => this.goToMatch(bet, bet.match, bet.homeTeam, bet.awayTeam)}>
-                    <View style={styles.itemSection}>
-                        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                            <Image style={styles.image} source={{ uri: bet.homeTeam.LogoURL }}></Image>
-                            {/* <Text style={{fontSize: 20}}>{bet.homeTeam.Name}</Text> */}
-                        </View>
-                    </View>
-                    <View style={{justifyContent: 'center'}}>
-                        <View style={{flexDirection: 'column', justifyContent: 'center'}}>
-                            {bet.IsResolved ? 
-                                <Text style={{alignSelf: 'center', fontSize: 20}}>{bet.match.HomeTeamScore} - {bet.match.AwayTeamScore}</Text>
-                            : 
-                                <Text style={{alignSelf: 'center', fontSize: 20}}>vs</Text> 
-                            }
-                            <Text style={{alignSelf: 'center', fontSize: 14}}>Bet: {this.getBetResult(bet)}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.itemSection}>
-                        <View style={{ flexDirection: 'column' }}>
-                            <Image style={styles.image} source={{ uri: bet.awayTeam.LogoURL }}></Image>
-                            {/* <Text style={{fontSize: 20}}>{bet.awayTeam.Name}</Text> */}
-                        </View>
-                    </View>
-                </TouchableOpacity>
-        )
-    }
-
     render() {
         if (this.state.isLoading) {
             return <Loading />
-        }
-        return (
-            <View style={{ width: '100%', height: '100%'}}>
-                {this.state.bets.length > 0 ?
-                    <FlatList
-                        style={{ width: '100%', borderTopWidth: 1, flex: 1 }}
-                        data={this.state.bets}
-                        renderItem={(item) => this.renderItem(item)}
-                        keyExtractor={(item) => item.MatchID}
+          }
+          return (
+            <ScrollView style={{width: '100%', height: '100%'}}>
+              {this.state.bets.map((bet, index) => {
+                return (
+                  <Card>
+                    <ListItem
+                      key={index}
+                      title={`${bet.match.HomeTeamScore} - ${bet.match.AwayTeamScore}`}
+                      subtitle={`Bet: ${this.getBetResult(bet)}`}
+                      contentContainerStyle={{fontSize: 24, alignItems: 'center'}}
+                      leftAvatar={{source: {uri: bet.homeTeam.LogoURL}, size: 'large', rounded: false, overlayContainerStyle: {backgroundColor: 'white'}}}
+                      rightAvatar={{source: {uri: bet.awayTeam.LogoURL}, size: 'large', rounded: false, overlayContainerStyle: {backgroundColor: 'white'}}}
+                      onPress={() => this.goToMatch(bet, bet.match, bet.homeTeam, bet.awayTeam)}
                     />
-                    :
-                    <EmptyList value="friends" />
-                }
-            </View>
-        )
+                  </Card>
+                )
+              })}
+              </ScrollView>
+          )
     }
 }
 
