@@ -9,7 +9,7 @@ export default class EmptyList extends React.Component {
     render() {
         return (
             <View style={styles.emptyComponent}>
-                <Text>No {this.props.value} to display</Text>
+                <Text>No {this.props.value ? this.props.value : "items"} to display</Text>
             </View>
         )
     }

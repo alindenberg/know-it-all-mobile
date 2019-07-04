@@ -82,6 +82,9 @@ export default class Match extends React.Component {
           <Text style={styles.teamScore}>-</Text>
           <Text style={styles.teamScore}>{this.match.AwayTeamScore}</Text>
         </View>
+        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{ fontSize: 24}}>{moment.utc(this.match.Date).format('MMMM Do, YYYY')}</Text>
+        </View>
         <View style={styles.matchBetSection}>
           {this._getBetSection(bet)}
         </View>
@@ -126,9 +129,9 @@ export default class Match extends React.Component {
           bet == null ?
           <Text style={{fontSize: 24}}>No bet was placed on match</Text>
           :
-          <View>
-          <Text style={{fontSize: 24}}>Bet: {this.modalOptions[bet.Prediction].label}</Text>
-          <Text style={{marginTop: 5, fontSize: 24}}>Result: {this._getBetResult(bet)}</Text>
+          <View style={{flexDirection: 'column', alignItems: 'center'}}>
+            <Text style={{fontSize: 24}}>Bet: {this.modalOptions[bet.Prediction].label}</Text>
+            <Text style={{marginTop: 10, fontSize: 24}}>Result: {this._getBetResult(bet)}</Text>
           </View>
         }
         </View>
