@@ -64,7 +64,7 @@ export default class ProfileScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <View style={{ marginTop: 10, alignItems: 'center' }}>
-          <Text style={{ fontSize: 24 }}>{this.state.user.Email}</Text>
+          <Text style={{ fontSize: 24 }}>{this.state.user.Username}</Text>
           {this.state.isUsersProfile ? <View style={{ flexDirection: 'row' }}>
             <Button
               onPress={() => {
