@@ -79,49 +79,56 @@ export default class BetList extends React.Component {
         return Promise.all(requests)
     }
 
-    getBetResult(bet, match) {
-        if(!bet.IsResolved) {
-            return "Pending"
-        }
-        //Predictions on backend: Home = 0, Away = 1, Draw = 2
-        var correctPrediction = 0
-    }
-
-    renderItem = ({ index, item }) => {
-        var title = `${item.homeTeam.Name} vs ${item.awayTeam.Name}`
+    getBetResult(bet) {
         var status = "Pending"
-        if (item.IsResolved) {
-            if (item.Won) {
+        if (bet.IsResolved) {
+            if (bet.Won) {
                 status = "Won"
             } else {
                 status = "Lost"
             }
         }
+
+        return status
+    }
+
+    goToMatch(bet, match, homeTeam, awayTeam) {
+        this.props.navigation.navigate('Match', {
+            match: match,
+            leagueId: bet.LeagueID,
+            user: this.state.user,
+            homeTeam: homeTeam,
+            awayTeam: awayTeam
+        })
+    }
+
+    renderItem = ({ index, item }) => {
+        var bet = item
         return (
-                <View style={styles.itemStyle}>
+                <TouchableOpacity style={styles.itemStyle} onPress={() => this.goToMatch(bet, bet.match, bet.homeTeam, bet.awayTeam)}>
                     <View style={styles.itemSection}>
-                        <View style={{ flexDirection: 'column' }}>
-                            <Image style={styles.image} source={{ uri: `http://icons.iconarchive.com/icons/giannis-zographos/english-football-club/128/${item.homeTeam.Name}-FC-icon.png` }}></Image>
-                            <Text style={{fontSize: 20}}>{item.homeTeam.Name}</Text>
+                        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                            <Image style={styles.image} source={{ uri: bet.homeTeam.LogoURL }}></Image>
+                            <Text style={{fontSize: 20}}>{bet.homeTeam.Name}</Text>
                         </View>
                     </View>
-                    <View style={styles.itemSection}>
+                    <View style={{justifyContent: 'center'}}>
                         <View style={{flexDirection: 'column', justifyContent: 'center'}}>
-                            {item.IsResolved ? 
-                                <Text style={{alignSelf: 'center', fontSize: 20}}>{item.match.HomeTeamScore} - {item.match.AwayTeamScore}</Text>
+                            {bet.IsResolved ? 
+                                <Text style={{alignSelf: 'center', fontSize: 20}}>{bet.match.HomeTeamScore} - {bet.match.AwayTeamScore}</Text>
                             : 
                                 <Text style={{alignSelf: 'center', fontSize: 20}}>vs</Text> 
                             }
-                            <Text style={{alignSelf: 'center', fontSize: 14}}>Bet: {status}</Text>
+                            <Text style={{alignSelf: 'center', fontSize: 14}}>Bet: {this.getBetResult(bet)}</Text>
                         </View>
                     </View>
                     <View style={styles.itemSection}>
                         <View style={{ flexDirection: 'column' }}>
-                            <Image style={styles.image} source={{ uri: `http://icons.iconarchive.com/icons/giannis-zographos/english-football-club/128/${item.awayTeam.Name}-FC-icon.png` }}></Image>
-                            <Text style={{fontSize: 20, textAlign: 'center'}}>{item.awayTeam.Name}</Text>
+                            <Image style={styles.image} source={{ uri: bet.awayTeam.LogoURL }}></Image>
+                            <Text style={{fontSize: 20}}>{bet.awayTeam.Name}</Text>
                         </View>
                     </View>
-                </View>
+                </TouchableOpacity>
         )
     }
 
@@ -130,10 +137,10 @@ export default class BetList extends React.Component {
             return <Loading />
         }
         return (
-            <View style={{ width: '100%' }}>
+            <View style={{ width: '100%', height: '100%'}}>
                 {this.state.bets.length > 0 ?
                     <FlatList
-                        style={{ width: '100%', borderTopWidth: 1 }}
+                        style={{ width: '100%', borderTopWidth: 1, flex: 1 }}
                         data={this.state.bets}
                         renderItem={(item) => this.renderItem(item)}
                         keyExtractor={(item) => item.MatchID}
@@ -150,7 +157,6 @@ const styles = StyleSheet.create({
     itemStyle: {
         flexDirection: 'row' ,
         flex: 1,
-        justifyContent: 'space-evenly',
         borderBottomWidth: 1
     },
     image: {

@@ -9,7 +9,7 @@ export default class EmptyList extends React.Component {
     render() {
         return (
             <View style={styles.emptyComponent}>
-                <Text>No matches to display</Text>
+                <Text>No {this.props.value} to display</Text>
             </View>
         )
     }
@@ -18,6 +18,8 @@ export default class EmptyList extends React.Component {
 const styles = StyleSheet.create({
     emptyComponent: {
         flex: 1,
+        flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center'
     }
 })

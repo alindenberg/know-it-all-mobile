@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Button, StyleSheet, Text, View, FlatList } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { Icon } from 'react-native-elements'
-import Unauthorized from '../components/Unauthorized'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import EmptyList from '../components/EmptyList'
 import Loading from '../components/Loading'
 import AsyncStorage from '@react-native-community/async-storage';
@@ -28,7 +28,6 @@ export default class LeagueScreen extends React.Component {
         'authorization': accessToken
       }
     }).then(res => {
-      console.log(res)
       return res.json()
     }).then(teams => {
       this.setState({ leagueTeams: teams })
@@ -77,7 +76,9 @@ export default class LeagueScreen extends React.Component {
       return null
     }
     return (
-      <View style={{ flex: 1, flexDirection: 'row', padding: 5, borderBottomWidth: 1 }}>
+      <TouchableOpacity
+        onPress={() => { this.goToMatch(this.props.navigation, item, homeTeam, awayTeam) }}
+        style={{ flex: 1, flexDirection: 'row', padding: 5, borderBottomWidth: 1 }}>
         <View style={{ flex: 9 }}>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
             <Text style={{ fontSize: 20, fontStyle: 'italic' }}>{homeTeam.Name}</Text>
@@ -92,10 +93,10 @@ export default class LeagueScreen extends React.Component {
             name="angle-right"
             type="font-awesome"
             color='#5388d0'
-            onPress={() => { this.goToMatch(this.props.navigation, item, homeTeam, awayTeam) }}>
+            >
           </Icon>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
   render() {

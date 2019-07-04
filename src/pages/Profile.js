@@ -19,10 +19,11 @@ export default class ProfileScreen extends React.Component {
       isLoading: true,
       isUsersProfile: true
     }
+  }
 
-    AsyncStorage.getItem('accessToken').then(accessToken => {
-      // console.log("props user id ", this.props.userId)
-      var userId = JSON.parse(base64.decode(accessToken.split('.')[1])).sub
+  async componentDidMount() {
+    await AsyncStorage.getItem('accessToken').then(token => {this.setState({accessToken: token})})
+    var userId = JSON.parse(base64.decode(this.state.accessToken.split('.')[1])).sub
       if(this.sentUserId != null && this.sentUserId != userId) {
         this.state.isUsersProfile = false
         userId = this.sentUserId
@@ -30,7 +31,7 @@ export default class ProfileScreen extends React.Component {
       const requests = []
       requests.push(fetch(`http://localhost:8080/users/${userId}`, {
         headers: {
-          authorization: accessToken
+          authorization: this.state.accessToken
         },
         method: 'GET'
       }).then(res => {
@@ -41,7 +42,7 @@ export default class ProfileScreen extends React.Component {
 
       requests.push(fetch(`http://localhost:8080/users`, {
         headers: {
-          authorization: accessToken
+          authorization: this.state.accessToken
         },
         method: 'GET'
       }).then(res => {
@@ -54,7 +55,6 @@ export default class ProfileScreen extends React.Component {
         this.state.isLoading = false
         this.setState(this.state)
       })
-    })
   }
 
   render() {

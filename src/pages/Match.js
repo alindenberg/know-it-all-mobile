@@ -3,10 +3,13 @@ import {
   View,
   StyleSheet,
   Text,
-  Button
+  Button,
+  Image
 } from 'react-native'
+import moment from 'moment'
 import ModalSelector from 'react-native-modal-selector'
 import AsyncStorage from '@react-native-community/async-storage'
+import { SafeAreaView } from 'react-navigation';
 
 export default class Match extends React.Component {
   constructor(props) {
@@ -20,109 +23,227 @@ export default class Match extends React.Component {
     this.matchDateArray = this.match.Date.split("T")[0].split("-"),
 
       this.modalOptions = [
-        { label: this.homeTeam.Name + " wins", key: 0 },
-        { label: this.awayTeam.Name + " wins", key: 1 },
+        { label: this.homeTeam.Name + " Wins", key: 0 },
+        { label: this.awayTeam.Name + " Wins", key: 1 },
         { label: "Draw", key: 2 }
       ]
 
     this.state = {
-      hasMadeBet: false,
+      canPlaceBet: this._canPlaceBet(this.match.Date),
       prediction: -1,
-      predictionIsSaved: true,
+      betIndex: false,
+      predictionIsSaved: true
     }
   }
 
   async componentDidMount() {
-    AsyncStorage.getItem("accessToken").then((token) => {
-      this.setState({ accessToken: token })
-    })
-    var bet = null
-    for (var i = 0; i < this.user.Bets.length; i++) {
-      bet = this.user.Bets[i]
-      if (bet.MatchID == this.match.MatchID) {
-        this.setState({ prediction: bet.Prediction, hasMadeBet: true })
+    accessToken = AsyncStorage.getItem("accessToken").then((token) => {
+      var betIndex = -1
+      var prediction = -1
+      for (var index = 0; index < this.user.Bets.length; index++) {
+        if (this.user.Bets[index].MatchID == this.match.MatchID) {
+          betIndex = index
+          prediction = this.user.Bets[index].Prediction
+          break
+        }
       }
-    }
+      this.setState({ accessToken: token, betIndex: betIndex, prediction: prediction })
+    })
   }
 
   render() {
+    var bet = this.state.betIndex > -1 ? this.user.Bets[this.state.betIndex] : null
     return (
-      <View style={styles.container}>
-        <View style={{ alignItems: 'center' }}>
-          <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-            <Text style={{ fontSize: 24 }}>{this.homeTeam.Name}</Text>
-            <Text style={{ fontSize: 12, fontStyle: 'italic', marginTop: 10, marginBottom: 10 }}>vs</Text>
-            <Text style={{ fontSize: 24 }}>{this.awayTeam.Name}</Text>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.matchHeading}>
+          <View style={styles.teamLogos}>
+            <View style={styles.teamLogo}>
+              <Image style={styles.logoImg} source={{ uri: this.homeTeam.LogoURL }}></Image>
+            </View>
+            <View style={{ flex: 1, flexDirection: 'row' }}></View>
+            <View style={styles.teamLogo}>
+              <Image style={styles.logoImg} source={{ uri: this.awayTeam.LogoURL }}></Image>
+            </View>
           </View>
-          <Text style={{ marginTop: 20 }}>Date: {this.matchDateArray[1]}-{this.matchDateArray[2]}-{this.matchDateArray[0]}</Text>
+          <View style={styles.teamNames}>
+            <Text style={styles.teamName}>{this.homeTeam.Name}</Text>
+            <Text style={{
+              flex: 1,
+              flexDirection: 'row',
+              fontSize: 20,
+              textAlign: 'center',
+              alignSelf: 'center'
+            }}>vs</Text>
+            <Text style={styles.teamName}>{this.awayTeam.Name}</Text>
+          </View>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
-          <Text style={{ marginRight: 5, fontSize: 20 }}>{this.state.hasMadeBet ? "Edit Bet:" : "Place Bet:"}</Text>
-          <ModalSelector
-            data={this.modalOptions}
-            initValue={this.state.prediction > -1 ? this.modalOptions[this.state.prediction].label : 'Select Result'}
-            labelExtractor={item => item.label}
-            onChange={(option) => {
-              if (option.key != this.state.prediction) {
-                this.setState({ prediction: option.key, predictionIsSaved: false })
-              }
-            }}
-            animationType={'none'}
-          />
+        <View style={styles.scoreLineSection}>
+          <Text style={styles.teamScore}>{this.match.HomeTeamScore}</Text>
+          <Text style={styles.teamScore}>-</Text>
+          <Text style={styles.teamScore}>{this.match.AwayTeamScore}</Text>
         </View>
-        <Button
-          title={"Save Bet"}
-          onPress={this._onPredictionSaved}
-          disabled={this.state.predictionIsSaved}
-        />
-      </View>
+        <View style={styles.matchBetSection}>
+          {this._getBetSection(bet)}
+        </View>
+      </SafeAreaView>
+    )
+  }
+  _getBetSection = (bet) => {
+    // We may place a new bet or modify our existing bet on this match
+    if (this.state.canPlaceBet) {
+      return (
+        <View style={{ flexDirection: 'column',justifyContent: 'center', width: '100%' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <ModalSelector
+              data={this.modalOptions}
+              initValue={this.state.prediction > -1 ? this.modalOptions[this.state.prediction].label : 'Place Bet'}
+              labelExtractor={item => item.label}
+              onChange={(option) => {
+                if (option.key != this.state.prediction) {
+                  this.setState({ prediction: option.key, predictionIsSaved: false })
+                }
+              }}
+              style={{width: 300}}
+              animationType={'none'}
+            />
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <Button
+              title={"Save Bet"}
+              onPress={this._onPredictionSaved}
+              disabled={this.state.predictionIsSaved}
+            />
+          </View>
+        </View>
+      )
+    }
+    // We may not place a new bet
+    // - If no bet was placed, display generic message
+    // - If Bet was placed, display results
+    return (
+      <View style={{ flexDirection: 'column',justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+        {
+          bet == null ?
+          <Text style={{fontSize: 24}}>No bet was placed on match</Text>
+          :
+          <View>
+          <Text style={{fontSize: 24}}>Bet: {this.modalOptions[bet.Prediction].label}</Text>
+          <Text style={{marginTop: 5, fontSize: 24}}>Result: {this._getBetResult(bet)}</Text>
+          </View>
+        }
+        </View>
     )
   }
 
-  _onPredictionSaved = async () => {
-    await fetch(`http://localhost:8080/users/${this.user.UserID}/bets`, {
+  _canPlaceBet = (date) => {
+    var utcNow = moment.utc()
+    var matchUtc = moment.utc(date)
+
+    if (matchUtc.isAfter(utcNow)) {
+      return true
+    }
+    return false
+  }
+  _onPredictionSaved = () => {
+    this.state.betIndex > -1 ? this.updateBet() : this.createBet()
+    this.setState({ predictionIsSaved: true })
+  }
+
+  _getBetResult = (bet) => {
+    var status = "Pending"
+    if (bet.IsResolved) {
+      if (bet.Won) {
+        status = "Won"
+      } else {
+        status = "Lost"
+      }
+    }
+    return status
+  }
+
+  updateBet() {
+    fetch(`http://localhost:8080/users/${this.user.UserID}/bets/${this.match.MatchID}`, {
       method: 'POST',
       headers: {
         authorization: this.state.accessToken
       },
       body: JSON.stringify({
-        matchId: this.match.MatchID,
-        leagueId: this.leagueId,
         prediction: this.state.prediction
       })
+    }).then(() => {
+      //update local user bet
+      this.user.Bets[this.state.betIndex].Prediction = this.state.prediction
     })
-    this.updateLocalUserBet(this.match.MatchID, this.state.prediction)
-    // mark prediction as saved to disable button
-    this.setState({ predictionIsSaved: true })
   }
 
-  // Update client side version of user bets array
-  updateLocalUserBet = (matchId, prediction) => {
-    if (this.state.hasMadeBet) {
-      for (var i = 0; i < this.user.Bets.length; i++) {
-        if (this.user.Bets[i].MatchID == matchId) {
-          this.user.Bets[i].Prediction = prediction
-        }
-      }
-    } else {
-      this.user.Bets.push({ MatchID: this.match.MatchID, Prediction: this.state.prediction })
-    }
+  createBet() {
+    fetch(`http://localhost:8080/users/${this.user.UserID}/bets}`, {
+      method: 'POST',
+      headers: {
+        authorization: this.state.accessToken
+      },
+      body: JSON.stringify({
+        MatchId: this.match.MatchID,
+        LeagueId: this.leagueId,
+        Prediction: this.state.prediction
+      })
+    }).then(bet => {
+      //create local user bet
+      this.user.Bets.push(bet)
+      var betIndex = this.user.Bets.length - 1
+      this.setState({ betIndex: betIndex })
+    })
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10
   },
   matchHeading: {
+    flex: 1
+  },
+  teamLogos: {
     flex: 1,
+    flexDirection: 'row'
+  },
+  teamLogo: {
+    flex: 3,
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'red'
   },
-  teamText: {
+  logoImg: {
+    height: 120,
+    width: 120
+  },
+  teamNames: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  teamName: {
     flex: 3,
+    flexDirection: 'row',
     textAlign: 'center',
+    alignSelf: 'center',
+    fontSize: 28,
+  },
+  teamScore: {
+    fontSize: 40
+  },
+  scoreLineSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
+  },
+  matchBetSection: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  betText: {
     fontSize: 24
   }
 })

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon } from 'react-native-elements';
 import { Text, View, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class LeagueScreen extends React.Component {
   state = {
@@ -20,16 +21,18 @@ export default class LeagueScreen extends React.Component {
   }
 
   goToLeague = (navigation, league) => {
-    navigation.navigate("LeagueScreen", {league: league})
+    navigation.navigate("LeagueScreen", { league: league })
   }
   //Define your renderItem method the callback for the FlatList for rendering each item, and pass data as a argument.
   renderItem = ({ item }) => {
     return (
-      <View style={{
-        flexDirection: 'row',
-        padding: 5,
-        borderBottomWidth: 1
-      }}>
+      <TouchableOpacity
+        onPress={() => { this.goToLeague(this.props.navigation, item) }}
+        style={{
+          flexDirection: 'row',
+          padding: 5,
+          borderBottomWidth: 1
+        }}>
         <View style={{ justifyContent: 'flex-start', marginLeft: 10 }}>
           <Text style={{ fontSize: 20 }}>{item.Name}</Text>
           <Text style={{ fontSize: 12 }}>{item.Country}, Division {item.Division}</Text>
@@ -39,11 +42,10 @@ export default class LeagueScreen extends React.Component {
             size={34}
             name="angle-right"
             type="font-awesome"
-            color='#5388d0'
-            onPress={() => { this.goToLeague(this.props.navigation, item) }}>
+            color='#5388d0'>
           </Icon>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
   render() {
@@ -75,6 +77,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginRight: 10,
     alignSelf: 'center',
-    justifyContent: 'flex-end' 
+    justifyContent: 'flex-end'
   }
 })

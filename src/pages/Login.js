@@ -6,6 +6,7 @@ import {
 } from 'react-native'
 import {_onLogin} from '../services/Auth'
 import AsyncStorage from '@react-native-community/async-storage';
+import { SafeAreaView } from 'react-navigation';
 
 export default class LoginScreen extends React.Component {
   constructor(props) {
@@ -13,7 +14,7 @@ export default class LoginScreen extends React.Component {
   }
   render() {
     return (
-      <View style={{ flex: 1, padding: 10, justfiyContent: 'center', alignItems: "center" }}>
+      <SafeAreaView style={{ flex: 1, padding: 10, justfiyContent: 'center', alignContent: "center" }}>
         <Button title="Login" onPress={async () => {
           await _onLogin().then(async (isSignup) => {
             // if(isSignup) {
@@ -24,7 +25,7 @@ export default class LoginScreen extends React.Component {
             console.log("Login error ", err)
           })
         }} />
-      </View>
+      </SafeAreaView>
     );
   }
 }
