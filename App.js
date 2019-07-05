@@ -42,7 +42,7 @@ const ProfileNavigator = createStackNavigator({
   ChangeUsername: {
     screen: ChangeUsernameScreen,
     navigationOptions: ({ navigation }) => ({
-      title: `${navigation.getParam("user").Username}`,
+      title: `Change Username`,
     })
   }
 }, {
