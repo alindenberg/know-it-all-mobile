@@ -11,6 +11,7 @@ import ProfileScreen from './src/pages/Profile.js'
 import LeaderboardScreen from './src/pages/Leaderboard.js'
 import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
+import ChangeUsernameScreen from './src/pages/ChangeUsernameScreen.js';
 
 const LeagueNavigator = createStackNavigator({
   AllLeagueScreen: {
@@ -37,7 +38,13 @@ const LeagueNavigator = createStackNavigator({
 
 const ProfileNavigator = createStackNavigator({
   Profile: ProfileScreen,
-  Match: MatchScreen
+  Match: MatchScreen,
+  ChangeUsername: {
+    screen: ChangeUsernameScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: `${navigation.getParam("user").Username}`,
+    })
+  }
 }, {
   initialRouteName: 'Profile'
 })

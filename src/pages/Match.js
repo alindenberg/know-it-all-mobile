@@ -202,7 +202,7 @@ export default class Match extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 40,
     marginLeft: 10,
     marginRight: 10
   },
@@ -236,7 +236,8 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   teamScore: {
-    fontSize: 40
+    fontSize: 40,
+    marginTop: 20
   },
   scoreLineSection: {
     flexDirection: 'row',

@@ -65,7 +65,27 @@ export default class ProfileScreen extends React.Component {
       <SafeAreaView style={styles.container}>
         <View style={{ marginTop: 10, alignItems: 'center' }}>
           <Text style={{ fontSize: 24 }}>{this.state.user.Username}</Text>
-          {this.state.isUsersProfile ? <View style={{ flexDirection: 'row' }}>
+          {this.state.isUsersProfile ? 
+          <View style={{ flexDirection: 'column', alingItems: 'center', width: '100%' }}>
+            <Button
+              onPress={() => {
+                _onPasswordChange().then(() => {
+                  Alert.alert(
+                    'Email Sent!',
+                    'Check your inbox for a link to change your password.',
+                    [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                    { cancelable: false },
+                  );
+                })
+              }}
+              title="Change Password"
+            />
+            <Button
+              onPress={() => {   
+               this.props.navigation.navigate('ChangeUsername', {user: this.state.user})
+              }}
+              title="Change Username"
+            />
             <Button
               onPress={() => {
                 _onLogout().then(() => {
@@ -76,24 +96,8 @@ export default class ProfileScreen extends React.Component {
               }}
               title="Logout"
             />
-
-            <Button
-              onPress={() => {
-                _onPasswordChange().then(() => {
-                  // Works on both iOS and Android
-                  Alert.alert(
-                    'Email Sent!',
-                    'Check your inbox for a link to change your password.',
-                    [
-                      { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ],
-                    { cancelable: false },
-                  );
-                })
-              }}
-              title="Change Password"
-            />
-          </View> : null}
+          </View> 
+          : null}
           <BetList user={this.state.user} navigation={this.props.navigation} bets={this.state.user.Bets} />
         </View>
       </SafeAreaView>
