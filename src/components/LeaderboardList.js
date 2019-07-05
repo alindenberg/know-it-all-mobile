@@ -26,10 +26,7 @@ export default class LeaderboardList extends React.Component {
                             <Card key={index} containerStyle={{ padding: 0 }} >
                                 <ListItem
                                     key={index}
-                                    roundAvatar
-                                    title={user.Username} leftAvatar={{
-                                        title: `#${index + 1}`
-                                    }}
+                                    title={`${index+1}) ${user.Username}`}
                                     rightTitle={`${user.Wins}-${user.Losses}`}
                                     onPress={() => this.props.navigation.navigate('UserProfile', { userId: user.UserID })}
                                 />
