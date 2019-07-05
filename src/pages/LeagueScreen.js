@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
-import { Icon } from 'react-native-elements'
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import EmptyList from '../components/EmptyList'
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Card, ListItem } from 'react-native-elements'
 import Loading from '../components/Loading'
 import AsyncStorage from '@react-native-community/async-storage';
 import base64 from 'base-64'
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import EmptyList from '../components/EmptyList';
 
+var moment = require('moment')
 export default class LeagueScreen extends React.Component {
   constructor(props) {
     super(props)
@@ -50,8 +51,8 @@ export default class LeagueScreen extends React.Component {
     })
   }
 
-  goToMatch = (navigation, match, homeTeam, awayTeam) => {
-    navigation.navigate('Match', {
+  goToMatch = (match, homeTeam, awayTeam) => {
+    this.props.navigation.navigate('Match', {
       match: match,
       leagueId: this.league.LeagueID,
       user: this.state.user,
@@ -68,64 +69,45 @@ export default class LeagueScreen extends React.Component {
     }
     return null
   }
-  //Define your renderItem method the callback for the FlatList for rendering each item, and pass data as a argument.
-  renderMatch = ({ item }) => {
-    var homeTeam = this.getTeam(item.HomeTeamID)
-    var awayTeam = this.getTeam(item.AwayTeamID)
-    if (homeTeam == null || awayTeam == null) {
-      return null
-    }
-    return (
-      <TouchableOpacity
-        onPress={() => { this.goToMatch(this.props.navigation, item, homeTeam, awayTeam) }}
-        style={{ flex: 1, flexDirection: 'row', padding: 5, borderBottomWidth: 1 }}>
-        <View style={{ flex: 9 }}>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            <Text style={{ fontSize: 20, fontStyle: 'italic' }}>{homeTeam.Name}</Text>
-            <Text style={{ fontSize: 20 }}> vs </Text>
-            <Text style={{ fontSize: 20, fontStyle: 'italic' }}>{awayTeam.Name}</Text>
-          </View>
-          <Text style={{ fontSize: 12, fontStyle: 'italic' }}>{item.Date.split("T")[0]}</Text>
-        </View>
-        <View style={styles.iconView}>
-          <Icon
-            size={34}
-            name="angle-right"
-            type="font-awesome"
-            color='#5388d0'
-            >
-          </Icon>
-        </View>
-      </TouchableOpacity>
-    )
-  }
   render() {
-    var matches = this.league.UpcomingMatches
-    if (matches == null) {
-      matches = []
-    }
-    if (!this.state.isLoading) {
-      // if (!isAuthorized) { 
-      //   return <Unauthorized />
-      // } else {
-      return (
-        <View style={styles.container}>
-          {matches.length > 0 ?
-            <FlatList
-              style={styles.matchList}
-              data={matches}
-              renderItem={(match) => this.renderMatch(match)}
-              keyExtractor={(item) => item.MatchID}
-            />
-            :
-            <EmptyList value="matches" />
-          }
-        </View>
-      )
-      // }
-    } else {
+    if (this.state.isLoading) {
       return <Loading />
     }
+    var matches = this.league.UpcomingMatches
+    if(matches == null || matches.length == 0) {
+      return <EmptyList value="matches"/>
+    }
+    return (
+      <ScrollView style={{ width: '100%', height: '100%' }}>
+        {matches.map((match, index) => {
+          var homeTeam = this.getTeam(match.HomeTeamID)
+          var awayTeam = this.getTeam(match.AwayTeamID)
+          if (homeTeam == null || awayTeam == null) {
+            return null
+          }
+          return (
+            <TouchableOpacity key={index} onPress={() => this.goToMatch(match, homeTeam, awayTeam)}>
+              <Card key={index}>
+                <ListItem
+                  key={index}
+                  contentContainerStyle={{ alignItems: 'center' }}
+                  leftAvatar={{ source: { uri: homeTeam.LogoURL }, subtitle:'Chelsea', size: 'large', rounded: false, overlayContainerStyle: { backgroundColor: 'white' } }}
+                  rightAvatar={{ source: { uri: awayTeam.LogoURL }, size: 'large', rounded: false, overlayContainerStyle: { backgroundColor: 'white' } }}
+                  title={
+                    <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                      <Text style={{textAlign: 'center'}}>{homeTeam.Name}</Text>
+                      <Text style ={{fontSize: 8, textAlign: 'center', marginBottom: 5, marginTop: 5}}>VS</Text>
+                      <Text style={{textAlign: 'center'}}>{awayTeam.Name}</Text>
+                      <Text style={{fontSize: 8, marginTop: 10}}>{moment.utc(match.Date).format("MMMM Do, YYYY")}</Text>
+                    </View>
+                  }
+                />
+              </Card>
+            </TouchableOpacity>
+          )
+        })}
+      </ScrollView>
+    )
   }
 }
 
@@ -152,5 +134,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
     alignSelf: 'center'
+  },
+  teamName: {
+    flex: 1,
+    flexDirection: 'row',
+    alignSelf: 'center',
+    justifyContent: 'center'
   }
 })

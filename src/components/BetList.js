@@ -36,7 +36,7 @@ export default class BetList extends React.Component {
 
             await Promise.all(requests).finally(() => {
                 // sort bets from future -> past
-                var sortedBets = this.state.bets.sort(function(bet1, bet2) {
+                var sortedBets = this.state.bets.sort(function (bet1, bet2) {
                     var date1 = moment.utc(bet1.match.Date)
                     var date2 = moment.utc(bet2.match.Date)
                     return (date1 > date2 ? -1 : (date1 < date2 ? 1 : 0));
@@ -112,32 +112,36 @@ export default class BetList extends React.Component {
     render() {
         if (this.state.isLoading) {
             return <Loading />
-          }
-          return (
-            <ScrollView style={{width: '100%', height: '100%'}}>
-              {this.state.bets.map((bet, index) => {
-                return (
-                  <Card key={index}>
-                    <ListItem
-                      key={index}
-                      title={`${bet.match.HomeTeamScore} - ${bet.match.AwayTeamScore}`}
-                      subtitle={`Bet: ${this.getBetResult(bet)}`}
-                      contentContainerStyle={{alignItems: 'center'}}
-                      leftAvatar={{source: {uri: bet.homeTeam.LogoURL}, size: 'large', rounded: false, overlayContainerStyle: {backgroundColor: 'white'}}}
-                      rightAvatar={{source: {uri: bet.awayTeam.LogoURL}, size: 'large', rounded: false, overlayContainerStyle: {backgroundColor: 'white'}}}
-                      onPress={() => this.goToMatch(bet, bet.match, bet.homeTeam, bet.awayTeam)}
-                    />
-                  </Card>
-                )
-              })}
-              </ScrollView>
-          )
+        }
+        return (
+            <ScrollView style={{ width: '100%', height: '100%' }}>
+                {this.state.bets.map((bet, index) => {
+                    return (
+                        <Card containerStyle={{ padding: 0}} key={index}>
+                            <ListItem
+                                key={index}
+                                title={
+                                    <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                                        <Text style={{fontSize: 24, textAlign: 'center'}}>{bet.match.HomeTeamScore} - {bet.match.AwayTeamScore}</Text>
+                                        <Text style={{fontSize: 12, paddingBottom: 0}}>Bet: {this.getBetResult(bet)}</Text>
+                                    </View>
+                                }
+                                contentContainerStyle={{ alignItems: 'center' }}
+                                leftAvatar={{ source: { uri: bet.homeTeam.LogoURL }, size: 'large', rounded: false, overlayContainerStyle: { backgroundColor: 'white' } }}
+                                rightAvatar={{ source: { uri: bet.awayTeam.LogoURL }, size: 'large', rounded: false, overlayContainerStyle: { backgroundColor: 'white' } }}
+                                onPress={() => this.goToMatch(bet, bet.match, bet.homeTeam, bet.awayTeam)}
+                            />
+                        </Card>
+                    )
+                })}
+            </ScrollView>
+        )
     }
 }
 
 const styles = StyleSheet.create({
     itemStyle: {
-        flexDirection: 'row' ,
+        flexDirection: 'row',
         flex: 1,
         borderBottomWidth: 1
     },

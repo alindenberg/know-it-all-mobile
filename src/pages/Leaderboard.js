@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import LeaderboardList from '../components/LeaderboardList'
 import base64 from 'base-64'
@@ -61,6 +61,20 @@ export default class Leaderboard extends React.Component {
         return (
             <View style={{ flex: 1 }}>
                 <TabView
+                    renderTabBar={props =>
+                        <TabBar
+                            {...props}
+                            indicatorStyle={{ backgroundColor: 'black' }}
+                            style={{ backgroundColor: 'white' }}
+                            renderLabel={({route, index}) => {
+                                return (
+                                    <View style={{height: 30}}>
+                                        <Text style={{color: 'black', textAlign: 'center'}}>{route.title}</Text>
+                                    </View>
+                                )
+                            }}
+                        />
+                    }
                     navigationState={this.state}
                     renderScene={SceneMap({
                         first: () => <LeaderboardList navigation={this.props.navigation} data={this.state.friendLeaderboard} />,
