@@ -66,8 +66,9 @@ export default class ProfileScreen extends React.Component {
         <View style={{ marginTop: 10, alignItems: 'center' }}>
           <Text style={{ fontSize: 24 }}>{this.state.user.Username}</Text>
           {this.state.isUsersProfile ? 
-          <View style={{ flexDirection: 'column', alingItems: 'center', width: '100%' }}>
+          <View style={{ flexDirection: 'column', alignItems: 'center', width: '100%'}}>
             <Button
+              style={{alignSelf: 'stretch'}}
               onPress={() => {
                 _onPasswordChange().then(() => {
                   Alert.alert(
