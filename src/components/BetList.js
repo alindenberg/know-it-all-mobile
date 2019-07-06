@@ -117,13 +117,13 @@ export default class BetList extends React.Component {
             <ScrollView style={{ width: '100%', height: '100%' }}>
                 {this.state.bets.map((bet, index) => {
                     return (
-                        <Card containerStyle={{ padding: 0}} key={index}>
+                        <Card containerStyle={{ padding: 0 }} key={index}>
                             <ListItem
                                 key={index}
                                 title={
-                                    <View style={{flexDirection: 'column', alignItems: 'center'}}>
-                                        <Text style={{fontSize: 24, textAlign: 'center'}}>{bet.match.HomeTeamScore} - {bet.match.AwayTeamScore}</Text>
-                                        <Text style={{fontSize: 12, paddingBottom: 0}}>Bet: {this.getBetResult(bet)}</Text>
+                                    <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                                        <Text style={{ fontSize: 24, textAlign: 'center' }}>{bet.match.HomeTeamScore} - {bet.match.AwayTeamScore}</Text>
+                                        <Text style={{ fontSize: 12, paddingBottom: 0 }}>Bet: {this.getBetResult(bet)}</Text>
                                     </View>
                                 }
                                 contentContainerStyle={{ alignItems: 'center' }}

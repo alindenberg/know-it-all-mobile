@@ -13,6 +13,7 @@ import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
 import SettingsScreen from './src/pages/SettingsScreen.js';
 import SignupScreen from './src/pages/SignupScreen.js';
+import FriendsScreen from './src/pages/FriendsScreen'
 
 const LeagueNavigator = createStackNavigator({
   AllLeagueScreen: {
@@ -34,12 +35,18 @@ const LeagueNavigator = createStackNavigator({
     }),
   },
 }, {
-  initialRouteName: 'AllLeagueScreen'
-})
+    initialRouteName: 'AllLeagueScreen'
+  })
 
 const ProfileNavigator = createStackNavigator({
   Profile: ProfileScreen,
   Match: MatchScreen,
+  Friends: {
+    screen: FriendsScreen,
+    navigationOptions: () => ({
+      title: `Friends`
+    })
+  },
   Settings: {
     screen: SettingsScreen,
     navigationOptions: () => ({
@@ -47,16 +54,16 @@ const ProfileNavigator = createStackNavigator({
     })
   }
 }, {
-  initialRouteName: 'Profile'
-})
+    initialRouteName: 'Profile'
+  })
 
 const LeaderboardNavigator = createStackNavigator({
   Leaderboard: LeaderboardScreen,
   UserProfile: ProfileScreen,
   Match: MatchScreen
 }, {
-  initialRouteName: 'Leaderboard'
-})
+    initialRouteName: 'Leaderboard'
+  })
 
 // Leaderboards | Leagues | Friends | Profile
 const AppNavigator = createBottomTabNavigator({
@@ -64,25 +71,25 @@ const AppNavigator = createBottomTabNavigator({
   Leaderboard: LeaderboardNavigator,
   Leagues: LeagueNavigator
 }, {
-  initialRouteName: 'Profile',
-  tabBarOptions: {
-    activeTintColor: '#007AFF',
-    inactiveTintColor: 'gray',
-  },
-});
+    initialRouteName: 'Profile',
+    tabBarOptions: {
+      activeTintColor: '#007AFF',
+      inactiveTintColor: 'gray',
+    },
+  });
 
 const LoginNavigator = createSwitchNavigator({
   Login: LoginScreen,
   Signup: SignupScreen
 }, {
-  initialRouteName: 'Login'
-})
+    initialRouteName: 'Login'
+  })
 const FullNavigator = createSwitchNavigator({
   AuthLoading: AuthLoadingScreen,
   Login: LoginNavigator,
   App: AppNavigator
 }, {
-  initialRouteName: 'AuthLoading'
-})
+    initialRouteName: 'AuthLoading'
+  })
 
 export default createAppContainer(FullNavigator);

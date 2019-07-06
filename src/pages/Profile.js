@@ -1,14 +1,11 @@
 import React from 'react';
-import { View, Text, Button, Alert, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-navigation';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import { _onLogout, _onPasswordChange } from '../services/Auth'
 import { Icon } from 'react-native-elements'
 import AsyncStorage from '@react-native-community/async-storage'
 import base64 from 'base-64'
 import Loading from '../components/Loading';
 import BetList from '../components/BetList';
-import UserList from '../components/UserList';
 
 export default class ProfileScreen extends React.Component {
   constructor(props) {
@@ -41,16 +38,16 @@ export default class ProfileScreen extends React.Component {
       this.state.user = user;
     }).catch(err => { console.log("USER bets ERROR ", err) }))
 
-    requests.push(fetch(`http://localhost:8080/users`, {
-      headers: {
-        authorization: this.state.accessToken
-      },
-      method: 'GET'
-    }).then(res => {
-      return res.json()
-    }).then(friends => {
-      this.state.friends = friends;
-    }).catch(err => { console.log("USER ERROR ", err) }))
+    // requests.push(fetch(`http://localhost:8080/users`, {
+    //   headers: {
+    //     authorization: this.state.accessToken
+    //   },
+    //   method: 'GET'
+    // }).then(res => {
+    //   return res.json()
+    // }).then(friends => {
+    //   this.state.friends = friends;
+    // }).catch(err => { console.log("USER ERROR ", err) }))
 
     Promise.all(requests).then(() => {
       this.state.isLoading = false
@@ -65,18 +62,25 @@ export default class ProfileScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         {this.state.isUsersProfile ?
-          <View style={{ width: '100%', flexDirection: 'row', paddingRight: 10, paddingLeft: 10, justifyContent: 'space-between', alignItems: 'center' }}>
-            <Icon
-              name='users'
-              type='font-awesome'
-              color='#007AFF'
-              onPress={() => this.props.navigation.navigate('Friends')} />
-            <Text style={{ fontSize: 40 }}>{this.state.user.Username}</Text>
-            <Icon
-              name='gear'
-              type='font-awesome'
-              color='#007AFF'
-              onPress={() => this.props.navigation.navigate('Settings', {user: this.state.user})} />
+          <View style={{ flexDirection: 'column', width: '100%' }}>
+            <View style={{ width: '100%', flexDirection: 'row', paddingRight: 10, justifyContent: 'flex-end' }}>
+              <View style={{ width: '90%', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 10 }}>
+                <Icon
+                  name='user-plus'
+                  type='font-awesome'
+                  color='#007AFF'
+                  onPress={() => this.props.navigation.navigate('Friends', { user: this.state.user })} />
+              </View>
+              <Icon
+                name='gear'
+                type='font-awesome'
+                color='#007AFF'
+                style={{ marginRight: 10 }}
+                onPress={() => this.props.navigation.navigate('Settings', { user: this.state.user })} />
+            </View>
+            <View>
+              <Text style={{ fontSize: 40, textAlign: 'center' }}>{this.state.user.Username}</Text>
+            </View>
           </View>
           :
           // TODO: Button to add this person as a friend
