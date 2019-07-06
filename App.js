@@ -11,7 +11,7 @@ import ProfileScreen from './src/pages/Profile.js'
 import LeaderboardScreen from './src/pages/Leaderboard.js'
 import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
-import ChangeUsernameScreen from './src/pages/ChangeUsernameScreen.js';
+import SettingsScreen from './src/pages/SettingsScreen.js';
 import SignupScreen from './src/pages/SignupScreen.js';
 
 const LeagueNavigator = createStackNavigator({
@@ -40,10 +40,10 @@ const LeagueNavigator = createStackNavigator({
 const ProfileNavigator = createStackNavigator({
   Profile: ProfileScreen,
   Match: MatchScreen,
-  ChangeUsername: {
-    screen: ChangeUsernameScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: `Change Username`,
+  Settings: {
+    screen: SettingsScreen,
+    navigationOptions: () => ({
+      title: `Settings`,
     })
   }
 }, {
@@ -66,7 +66,7 @@ const AppNavigator = createBottomTabNavigator({
 }, {
   initialRouteName: 'Profile',
   tabBarOptions: {
-    activeTintColor: 'tomato',
+    activeTintColor: '#007AFF',
     inactiveTintColor: 'gray',
   },
 });
