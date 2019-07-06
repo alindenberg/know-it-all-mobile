@@ -20,17 +20,20 @@ async function _onLogin() {
         });
 
     var idCreds = JSON.parse(base64.decode(accessToken.split(".")[1]))
-    return await fetch('http://localhost:8080/users', {
-            method: 'POST',
+    var userId = idCreds.sub
+    var isSignup = false
+    // Check if user is already registered in system
+    return await fetch(`http://localhost:8080/users/${userId}`, {
+            method: 'GET',
             headers: {
                 authorization: accessToken
             },
-            body: JSON.stringify({userid: idCreds.sub, email: idCreds.email})
         }).then((res) => {
-            if(res.status == 409) {
-                return false    
+            if(res.status == 400) {
+                isSignup = true
+                return isSignup
             }
-            return true
+            return isSignup
         })
 };
 

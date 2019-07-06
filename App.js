@@ -12,6 +12,7 @@ import LeaderboardScreen from './src/pages/Leaderboard.js'
 import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
 import ChangeUsernameScreen from './src/pages/ChangeUsernameScreen.js';
+import SignupScreen from './src/pages/SignupScreen.js';
 
 const LeagueNavigator = createStackNavigator({
   AllLeagueScreen: {
@@ -70,9 +71,15 @@ const AppNavigator = createBottomTabNavigator({
   },
 });
 
+const LoginNavigator = createSwitchNavigator({
+  Login: LoginScreen,
+  Signup: SignupScreen
+}, {
+  initialRouteName: 'Login'
+})
 const FullNavigator = createSwitchNavigator({
   AuthLoading: AuthLoadingScreen,
-  Login: LoginScreen,
+  Login: LoginNavigator,
   App: AppNavigator
 }, {
   initialRouteName: 'AuthLoading'
