@@ -40,6 +40,7 @@ const LeagueNavigator = createStackNavigator({
 
 const ProfileNavigator = createStackNavigator({
   Profile: ProfileScreen,
+  FriendProfile: ProfileScreen,
   Match: MatchScreen,
   Friends: {
     screen: FriendsScreen,
@@ -58,7 +59,12 @@ const ProfileNavigator = createStackNavigator({
   })
 
 const LeaderboardNavigator = createStackNavigator({
-  Leaderboard: LeaderboardScreen,
+  Leaderboard: {
+    screen: LeaderboardScreen,
+    navigationOptions: () => ({
+      title: `Leaderboard`
+    })
+  },
   UserProfile: ProfileScreen,
   Match: MatchScreen
 }, {

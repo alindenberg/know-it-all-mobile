@@ -66,10 +66,10 @@ export default class Leaderboard extends React.Component {
                             {...props}
                             indicatorStyle={{ backgroundColor: 'black' }}
                             style={{ backgroundColor: 'white' }}
-                            renderLabel={({route, index}) => {
+                            renderLabel={({ route, index }) => {
                                 return (
-                                    <View style={{height: 30}}>
-                                        <Text style={{color: 'black', textAlign: 'center'}}>{route.title}</Text>
+                                    <View style={{ height: 30 }}>
+                                        <Text style={{ color: 'black', textAlign: 'center' }}>{route.title}</Text>
                                     </View>
                                 )
                             }}

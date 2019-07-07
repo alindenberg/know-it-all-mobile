@@ -1,19 +1,28 @@
 import React from 'react'
 import {
   ScrollView,
+  TextInput,
   Text,
+  Button,
   View
 } from 'react-native'
 import { Card, ListItem } from 'react-native-elements'
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import EmptyList from '../components/EmptyList'
+import AddFriends from '../components/AddFriends'
 
 export default class FriendsScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      index: 0,
       user: this.props.navigation.getParam("user"),
-      friends: []
+      friends: [],
+      routes: [
+        { key: 'first', title: 'Friends' },
+        { key: 'second', title: 'Add Friends' },
+      ]
     }
   }
 
@@ -28,33 +37,59 @@ export default class FriendsScreen extends React.Component {
       }).then(res => {
         return res.json()
       }).then(friends => {
+        friends = friends == null ? [] : friends
         this.setState({ accessToken: accessToken, friends: friends })
       })
     })
   }
 
-  render() {
+  getFriendListComponent() {
     return (
-      // <View>
-      //   <Text>
-      //     Gary
-      //   </Text>
-      // </View>
       <ScrollView style={{ width: '100%', height: '100%' }}>
-        {this.state.friends.map((friend, index) => {
+        {this.state.friends.map((user, index) => {
           return (
             <Card key={index} containerStyle={{ padding: 0 }} >
               <ListItem
                 key={index}
-                title={friend.Username}
-                // rightTitle={`${user.Wins}-${user.Losses}`}
-                onPress={() => this.props.navigation.navigate('UserProfile', { userId: friend.UserID })}
+                title={user.Username}
+                onPress={() => this.props.navigation.navigate('FriendProfile', { userId: user.UserID })}
               />
             </Card>
           );
-        })
-        }
+        })}
       </ScrollView>
     )
+  }
+  render() {
+    if (this.state.isLoading) {
+      return <Loading />
+    }
+    return (
+      <View style={{ flex: 1 }}>
+        <TabView
+          renderTabBar={props =>
+            <TabBar
+              {...props}
+              indicatorStyle={{ backgroundColor: 'black' }}
+              style={{ backgroundColor: 'white' }}
+              renderLabel={({ route, index }) => {
+                return (
+                  <View style={{ height: 30 }}>
+                    <Text style={{ color: 'black', textAlign: 'center' }}>{route.title}</Text>
+                  </View>
+                )
+              }}
+            />
+          }
+          navigationState={this.state}
+          renderScene={SceneMap({
+            first: () => this.getFriendListComponent(),
+            second: () => <AddFriends navigation={this.props.navigation} user={this.state.user} />,
+          })}
+          onIndexChange={index => this.setState({ index })}
+          initialLayout={{ height: 100, width: 100 }}
+        />
+      </View>
+    );
   }
 }

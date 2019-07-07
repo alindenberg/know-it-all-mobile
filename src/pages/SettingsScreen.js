@@ -87,7 +87,7 @@ export default class SettingsScreen extends React.Component {
 								}
 							}
 							}
-							disabled={this.state.text == null || this.state.text == this.state.user.Username}
+							disabled={this.state.text == null || this.state.text == "" || this.state.text == this.state.user.Username}
 							title="Save Username" />
 						<Button onPress={() => this.setState({ showChangeUsername: false })} title="Cancel" />
 					</View>
