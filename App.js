@@ -13,7 +13,8 @@ import AuthLoadingScreen from './src/pages/AuthLoading.js'
 import LoginScreen from './src/pages/Login.js'
 import SettingsScreen from './src/pages/SettingsScreen.js';
 import SignupScreen from './src/pages/SignupScreen.js';
-import FriendsScreen from './src/pages/FriendsScreen'
+import FriendListScreen from './src/pages/FriendList'
+import FriendProfileScreen from './src/pages/FriendProfile'
 
 const LeagueNavigator = createStackNavigator({
   AllLeagueScreen: {
@@ -40,10 +41,10 @@ const LeagueNavigator = createStackNavigator({
 
 const ProfileNavigator = createStackNavigator({
   Profile: ProfileScreen,
-  FriendProfile: ProfileScreen,
+  FriendProfile: FriendProfileScreen,
   Match: MatchScreen,
-  Friends: {
-    screen: FriendsScreen,
+  FriendList: {
+    screen: FriendListScreen,
     navigationOptions: () => ({
       title: `Friends`
     })
@@ -65,7 +66,7 @@ const LeaderboardNavigator = createStackNavigator({
       title: `Leaderboard`
     })
   },
-  UserProfile: ProfileScreen,
+  FriendProfile: FriendProfileScreen,
   Match: MatchScreen
 }, {
     initialRouteName: 'Leaderboard'

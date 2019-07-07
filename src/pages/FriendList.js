@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import EmptyList from '../components/EmptyList'
 import AddFriends from '../components/AddFriends'
 
-export default class FriendsScreen extends React.Component {
+export default class FriendListScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
