@@ -32,7 +32,7 @@ export default class LeagueScreen extends React.Component {
                 <ListItem
                   key={index}
                   title={league.Name}
-                  leftAvatar={{ source: { uri: league.LogoURL }, size: 'medium', rounded: false }}
+                  leftAvatar={{ source: { uri: league.LogoURL }, size: 'large', rounded: false }}
                 />
               </Card>
             </TouchableOpacity>

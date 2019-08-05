@@ -52,7 +52,7 @@ export default class BetList extends React.Component {
     async getInfoForBet(accessToken, index) {
         var requests = []
         // Get match
-        var match = await fetch(`http://localhost:8080/leagues/${this.state.bets[index].LeagueID}/matches/${this.state.bets[index].MatchID}`, {
+        var match = await fetch(`http://localhost:8080/matches/${this.state.bets[index].MatchID}`, {
             headers: {
                 authorization: accessToken,
                 contentType: 'application/json'
@@ -112,6 +112,8 @@ export default class BetList extends React.Component {
     render() {
         if (this.state.isLoading) {
             return <Loading />
+        } else if (this.state.bets.length == 0) {
+            return <EmptyList value="bets"></EmptyList>
         }
         return (
             <ScrollView style={{ width: '100%', height: '100%' }}>

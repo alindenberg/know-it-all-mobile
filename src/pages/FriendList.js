@@ -38,12 +38,18 @@ export default class FriendListScreen extends React.Component {
         return res.json()
       }).then(friends => {
         friends = friends == null ? [] : friends
-        this.setState({ accessToken: accessToken, friends: friends })
+        this.setState({ accessToken: accessToken, friends: friends, isLoading: false })
       })
     })
   }
 
   getFriendListComponent() {
+    if (this.state.isLoading) {
+      return <Loading />
+    }
+    else if (this.state.friends.length == 0) {
+      return <EmptyList value="friends" />
+    }
     return (
       <ScrollView style={{ width: '100%', height: '100%' }}>
         {this.state.friends.map((user, index) => {

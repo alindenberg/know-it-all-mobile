@@ -41,8 +41,6 @@ export default class LeaderboardList extends React.Component {
                                     title={`${index + 1}) ${user.Username}`}
                                     rightTitle={`${user.Wins}-${user.Losses}`}
                                     onPress={() => {
-                                        console.log("LOGGED IN ID ", this.state.loggedInUserId)
-                                        console.log("USER ID ", user.UserID)
                                         if (this.state.loggedInUserId == user.UserID) {
                                             this.props.navigation.navigate('Profile')
                                         } else {
