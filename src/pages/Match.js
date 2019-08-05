@@ -37,6 +37,7 @@ export default class Match extends React.Component {
   }
 
   async componentDidMount() {
+    console.log("Current moment ", moment().format("MMMM Do, YYYY LT"))
     accessToken = AsyncStorage.getItem("accessToken").then((token) => {
       var betIndex = -1
       var prediction = -1
@@ -83,7 +84,8 @@ export default class Match extends React.Component {
           <Text style={styles.teamScore}>{this.match.AwayTeamScore}</Text>
         </View>
         <View style={styles.matchDateSection}>
-          <Text style={styles.betText}>{moment.utc(this.match.Date).format('MMMM Do, YYYY')}</Text>
+          <Text style={styles.betText}>{moment(this.match.Date).format('MMMM Do, YYYY')}</Text>
+          <Text style={styles.betText}>{moment(this.match.Date).format('LT')}</Text>
         </View>
         <View style={styles.matchBetSection}>
           {this._getBetSection(bet)}
@@ -95,7 +97,7 @@ export default class Match extends React.Component {
     // We may place a new bet or modify our existing bet on this match
     if (this.state.canPlaceBet) {
       return (
-        <View style={{ flexDirection: 'column',justifyContent: 'center', width: '100%' }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'center', width: '100%' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <ModalSelector
               data={this.modalOptions}
@@ -106,7 +108,7 @@ export default class Match extends React.Component {
                   this.setState({ prediction: option.key, predictionIsSaved: false })
                 }
               }}
-              style={{width: 300}}
+              style={{ width: 300 }}
               animationType={'none'}
             />
           </View>
@@ -124,17 +126,17 @@ export default class Match extends React.Component {
     // - If no bet was placed, display generic message
     // - If Bet was placed, display results
     return (
-      <View style={{ flexDirection: 'column',justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+      <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
         {
           bet == null ?
-          <Text style={{fontSize: 24}}>No bet was placed on match</Text>
-          :
-          <View style={{flexDirection: 'column', alignItems: 'center'}}>
-            <Text style={{fontSize: 24}}>Bet: {this.modalOptions[bet.Prediction].label}</Text>
-            <Text style={{marginTop: 10, fontSize: 24}}>Result: {this._getBetResult(bet)}</Text>
-          </View>
+            <Text style={{ fontSize: 24 }}>No bet was placed on match</Text>
+            :
+            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+              <Text style={{ fontSize: 24 }}>Bet: {this.modalOptions[bet.Prediction].label}</Text>
+              <Text style={{ marginTop: 10, fontSize: 24 }}>Result: {this._getBetResult(bet)}</Text>
+            </View>
         }
-        </View>
+      </View>
     )
   }
 
@@ -142,10 +144,7 @@ export default class Match extends React.Component {
     var utcNow = moment.utc()
     var matchUtc = moment.utc(date)
 
-    if (matchUtc.isAfter(utcNow)) {
-      return true
-    }
-    return false
+    return matchUtc.isAfter(utcNow)
   }
   _onPredictionSaved = () => {
     this.state.betIndex > -1 ? this.updateBet() : this.createBet()
@@ -252,7 +251,7 @@ const styles = StyleSheet.create({
   },
   matchDateSection: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
   }

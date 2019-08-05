@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native'
-import { SafeAreaView } from 'react-navigation';
+import { SafeAreaView, NavigationEvents } from 'react-navigation';
 import { Icon } from 'react-native-elements'
 import AsyncStorage from '@react-native-community/async-storage'
 import base64 from 'base-64'
@@ -20,24 +20,22 @@ export default class ProfileScreen extends React.Component {
     await AsyncStorage.getItem('accessToken').then(token => { this.setState({ accessToken: token }) })
     // Userid will be the id of the actual signed in user, the state's user will be whoever's profile we are viewing
     var userId = JSON.parse(base64.decode(this.state.accessToken.split('.')[1])).sub
-
-    const requests = []
     // Get profile object for user's who profile we are displaying
-    requests.push(fetch(`http://localhost:8080/users/${userId}`, {
+    this.fetchUser(userId).then((user) => {
+      this.setState({
+        isLoading: false,
+        user: user
+      })
+    })
+  }
+
+  async fetchUser(userId) {
+    return fetch(`http://localhost:8080/users/${userId}`, {
       headers: {
         authorization: this.state.accessToken
       },
       method: 'GET'
-    }).then(res => {
-      return res.json()
-    }).then(user => {
-      this.state.user = user;
-    }).catch(err => { console.log("USER bets ERROR ", err) }))
-
-    Promise.all(requests).then(() => {
-      this.state.isLoading = false
-      this.setState(this.state)
-    })
+    }).then(res => res.json()).catch(err => { console.log("USER bets ERROR ", err) })
   }
 
   render() {
@@ -46,6 +44,9 @@ export default class ProfileScreen extends React.Component {
     }
     return (
       <SafeAreaView style={styles.container}>
+        <NavigationEvents onWillFocus={async () => await this.fetchUser(this.state.user.UserID).then(user => {
+          this.setState({ user: user })
+        })} />
         <View style={{ flexDirection: 'column', width: '100%' }}>
           <View style={{ width: '100%', flexDirection: 'row', paddingRight: 10, justifyContent: 'flex-end' }}>
             <View style={{ width: '90%', flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 10 }}>

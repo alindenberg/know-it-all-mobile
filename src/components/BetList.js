@@ -25,65 +25,68 @@ export default class BetList extends React.Component {
         }
     }
 
-    async componentDidMount() {
-        AsyncStorage.getItem('accessToken').then(async accessToken => {
-            // load matches for bets, append to bet object
-            var requests = []
-            for (var index = 0; index < this.state.bets.length; index++) {
-                var promise = this.getInfoForBet(accessToken, index)
-                requests.push(promise)
-            }
-
-            await Promise.all(requests).finally(() => {
-                // sort bets from future -> past
-                var sortedBets = this.state.bets.sort(function (bet1, bet2) {
-                    var date1 = moment.utc(bet1.match.Date)
-                    var date2 = moment.utc(bet2.match.Date)
-                    return (date1 > date2 ? -1 : (date1 < date2 ? 1 : 0));
-                })
-
-                this.state.bets = sortedBets
-                this.state.isLoading = false
-                this.setState(this.state)
+    async componentWillReceiveProps({ bets }) {
+        //  No update to bet array
+        if (bets.length == this.state.bets.length) {
+            return
+        }
+        this.setState({ isLoading: true })
+        await this.getMatchInfoForBets(this.state.accessToken, bets).then((modifiedBets) => {
+            this.setState({
+                bets: modifiedBets,
+                isLoading: false
             })
         })
     }
 
-    async getInfoForBet(accessToken, index) {
-        var requests = []
-        // Get match
-        var match = await fetch(`http://localhost:8080/matches/${this.state.bets[index].MatchID}`, {
-            headers: {
-                authorization: accessToken,
-                contentType: 'application/json'
-            }
-        }).then(res => res.json()).then(match => match)
-
-        this.state.bets[index].match = match
-
-        // Get home team
-        var homeTeamRequest = fetch(`http://localhost:8080/teams/${match.HomeTeamID}`, {
-            headers: {
-                authorization: accessToken,
-                contentType: 'application/json'
-            }
-        }).then(res => res.json()).then(team => {
-            this.state.bets[index].homeTeam = team
+    async componentDidMount() {
+        AsyncStorage.getItem('accessToken').then(async accessToken => {
+            await this.getMatchInfoForBets(accessToken, this.state.bets).then((bets) => {
+                this.setState({
+                    bets: bets,
+                    isLoading: false,
+                    accessToken: accessToken
+                })
+            })
         })
+    }
 
-        // Get away team
-        var awayTeamRequest = fetch(`http://localhost:8080/teams/${match.AwayTeamID}`, {
-            headers: {
-                authorization: accessToken,
-                contentType: 'application/json'
-            }
-        }).then(res => res.json()).then(team => {
-            this.state.bets[index].awayTeam = team
+    async getMatchInfoForBets(accessToken, bets) {
+        for (var index = 0; index < bets.length; index++) {
+            // Get match
+            await fetch(`http://localhost:8080/matches/${bets[index].MatchID}`, {
+                headers: {
+                    authorization: accessToken,
+                    contentType: 'application/json'
+                }
+            }).then(async (res) => await res.json()).then(match => { console.log("BET MATCH ", match); bets[index].match = match })
+
+            // Get home team
+            await fetch(`http://localhost:8080/teams/${bets[index].match.HomeTeamID}`, {
+                headers: {
+                    authorization: accessToken,
+                    contentType: 'application/json'
+                }
+            }).then(async (res) => await res.json()).then(team => {
+                bets[index].homeTeam = team
+            })
+
+            // Get away team
+            await fetch(`http://localhost:8080/teams/${bets[index].match.AwayTeamID}`, {
+                headers: {
+                    authorization: accessToken,
+                    contentType: 'application/json'
+                }
+            }).then(async (res) => await res.json()).then(team => {
+                bets[index].awayTeam = team
+            })
+        }
+        // Sort bets
+        return bets.sort(function (bet1, bet2) {
+            var date1 = moment.utc(bet1.match.Date)
+            var date2 = moment.utc(bet2.match.Date)
+            return (date1 > date2 ? -1 : (date1 < date2 ? 1 : 0));
         })
-
-        requests.push(homeTeamRequest, awayTeamRequest)
-
-        return Promise.all(requests)
     }
 
     getBetResult(bet) {
